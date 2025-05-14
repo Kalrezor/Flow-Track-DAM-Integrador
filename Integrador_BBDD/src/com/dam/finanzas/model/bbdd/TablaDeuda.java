@@ -129,9 +129,8 @@ public class TablaDeuda {
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-			
-			e.printStackTrace();
-		} finally {
+            e.printStackTrace();
+        } finally {
             try {
                 if (rs != null) {
                     rs.close();
@@ -149,4 +148,5 @@ public class TablaDeuda {
 
         return deudas;
     }
+
 }

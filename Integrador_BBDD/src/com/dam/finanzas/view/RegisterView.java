@@ -1,7 +1,8 @@
 package com.dam.finanzas.view;
 
 import javax.swing.*;
-import com.dam.finanzas.control.RegisterController;
+
+import com.dam.finanzas.control.AppControlador;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -187,7 +188,7 @@ public class RegisterView extends JFrame {
         setContentPane(contentPane);
     }
 
-    public void setController(RegisterController controller) {
+    public void setController(AppControlador controller) {
         btnCrearCuenta.setActionCommand("Registrarse"); // Establece el actionCommand
         btnCrearCuenta.addActionListener(controller);
     }

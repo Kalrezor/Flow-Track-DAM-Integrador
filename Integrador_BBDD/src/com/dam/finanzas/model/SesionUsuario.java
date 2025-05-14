@@ -6,7 +6,6 @@ public class SesionUsuario {
     private String nombreUsuario;
 
     private SesionUsuario() {
-        // Constructor privado para evitar la creación de instancias desde fuera de la clase
     }
 
     public static SesionUsuario getInstancia() {
@@ -32,4 +31,3 @@ public class SesionUsuario {
         this.nombreUsuario = nombreUsuario;
     }
 }
-

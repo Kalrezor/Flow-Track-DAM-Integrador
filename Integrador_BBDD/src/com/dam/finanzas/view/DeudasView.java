@@ -10,7 +10,6 @@ import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.List;
 import com.dam.finanzas.model.Deuda;
-import com.dam.finanzas.model.SesionUsuario;
 import com.dam.finanzas.model.bbdd.TablaDeuda;
 
 public class DeudasView {
@@ -19,7 +18,6 @@ public class DeudasView {
     private JTextField txtMontoPendiente;
     private JTextField txtFechaVencimiento;
     private JButton btnRegistrarDeuda;
-    private JButton btnEditarDeuda;
     private DefaultTableModel tableModel;
     private JTable table;
     private List<Deuda> deudasList;
@@ -29,7 +27,7 @@ public class DeudasView {
         this.idUsuarioActual = idUsuarioActual;
         deudasList = new ArrayList<>();
         initializeTableModel();
-        cargarDeudasUsuario();
+        cargarDeudasUsuario(); // Cargar deudas al iniciar
     }
 
     private void initializeTableModel() {
@@ -41,7 +39,7 @@ public class DeudasView {
     private void cargarDeudasUsuario() {
         TablaDeuda tablaDeuda = new TablaDeuda();
         deudasList = tablaDeuda.obtenerDeudasPorUsuario(idUsuarioActual);
-        actualizarTablaDeudas();
+        actualizarTablaDeudas(); // Actualizar la tabla con los datos cargados
     }
 
     public JPanel createDeudasPanel() {
@@ -197,7 +195,6 @@ public class DeudasView {
         return panel;
     }
 
-
     private void registrarDeuda() {
         String descripcion = txtDescripcion.getText();
         String montoTotalStr = txtMontoTotal.getText();
@@ -218,7 +215,6 @@ public class DeudasView {
             int resultado = tablaDeuda.registrarDeuda(nuevaDeuda);
 
             if (resultado > 0) {
-                cargarDeudasUsuario();
                 JOptionPane.showMessageDialog(null, "Deuda registrada exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();
             } else {
@@ -266,7 +262,7 @@ public class DeudasView {
                 int resultado = tablaDeuda.actualizarDeuda(deudaSeleccionada);
 
                 if (resultado > 0) {
-                    actualizarTablaDeudas();
+                    actualizarTablaDeudas(); // Actualizar la tabla después de editar
                     JOptionPane.showMessageDialog(null, "Deuda actualizada exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "Error al actualizar la deuda", "Error", JOptionPane.ERROR_MESSAGE);
@@ -290,4 +286,5 @@ public class DeudasView {
             tableModel.addRow(rowData);
         }
     }
+
 }

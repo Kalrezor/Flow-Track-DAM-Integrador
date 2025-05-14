@@ -1,7 +1,8 @@
 package com.dam.finanzas.view;
 
 import javax.swing.*;
-import com.dam.finanzas.control.LoginController;
+
+import com.dam.finanzas.control.AppControlador;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -135,7 +136,7 @@ public class LoginView extends JFrame {
         setContentPane(contentPane);
     }
 
-    public void setController(LoginController controller) {
+    public void setController(AppControlador controller) {
         btnIniciarSesion.addActionListener(controller);
         btnCrearCuenta.addActionListener(controller);
     }
