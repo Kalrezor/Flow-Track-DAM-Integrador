@@ -215,6 +215,7 @@ public class DeudasView {
             int resultado = tablaDeuda.registrarDeuda(nuevaDeuda);
 
             if (resultado > 0) {
+                cargarDeudasUsuario(); // Recargar deudas después de registrar una nueva
                 JOptionPane.showMessageDialog(null, "Deuda registrada exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();
             } else {
@@ -262,7 +263,7 @@ public class DeudasView {
                 int resultado = tablaDeuda.actualizarDeuda(deudaSeleccionada);
 
                 if (resultado > 0) {
-                    actualizarTablaDeudas(); // Actualizar la tabla después de editar
+                    cargarDeudasUsuario(); // Recargar deudas después de editar
                     JOptionPane.showMessageDialog(null, "Deuda actualizada exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "Error al actualizar la deuda", "Error", JOptionPane.ERROR_MESSAGE);
@@ -286,5 +287,4 @@ public class DeudasView {
             tableModel.addRow(rowData);
         }
     }
-
 }

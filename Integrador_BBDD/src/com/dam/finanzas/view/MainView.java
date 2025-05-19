@@ -1,12 +1,11 @@
 package com.dam.finanzas.view;
 
 import javax.swing.*;
-
-import com.dam.finanzas.model.SesionUsuario;
-
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import com.dam.finanzas.model.SesionUsuario;
+import com.dam.finanzas.model.bbdd.TablaTransacciones;
 
 public class MainView extends JFrame {
     private JPanel sidebar; // Barra lateral de Navegación
@@ -14,6 +13,9 @@ public class MainView extends JFrame {
     private JPanel contentPanel; // El panel Principal que contiene las vistas
     private Map<String, Double> gastosMap; // Mapa para almacenar los gastos por categoría
     private int idUsuarioActual; // ID del usuario actual
+    private JLabel ingresosValueLabel; // Etiqueta para mostrar el total de ingresos
+    private JLabel gastosValueLabel; // Etiqueta para mostrar el total de gastos
+    private JLabel beneficioNetoValueLabel; // Etiqueta para mostrar el beneficio neto
 
     public MainView(int idUsuarioActual) {
         this.idUsuarioActual = idUsuarioActual;
@@ -42,7 +44,7 @@ public class MainView extends JFrame {
         contentPanel.add(homePanel, "HOME");
 
         // Pantalla de Transacciones
-        TransaccionesView transaccionesView = new TransaccionesView(gastosMap);
+        TransaccionesView transaccionesView = new TransaccionesView(gastosMap, idUsuarioActual);
         JPanel transaccionesPanel = transaccionesView.createTransaccionesPanel();
         contentPanel.add(transaccionesPanel, "TRANSACCIONES");
 
@@ -55,10 +57,6 @@ public class MainView extends JFrame {
         ObjetivosView objetivosView = new ObjetivosView();
         JPanel objetivosPanel = objetivosView.createObjetivosPanel();
         contentPanel.add(objetivosPanel, "OBJETIVOS");
-
-        // Pantalla de Estadísticas
-        // EstadisticasView estadisticasView = new EstadisticasView();
-        // contentPanel.add(estadisticasPanel, "ESTADISTICAS");
 
         getContentPane().add(contentPanel, BorderLayout.CENTER);
     }
@@ -153,7 +151,7 @@ public class MainView extends JFrame {
         JLabel ingresosLabel = new JLabel("Ingresos");
         ingresosLabel.setFont(new Font("Arial", Font.BOLD, 14));
         ingresosLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        JLabel ingresosValueLabel = new JLabel("$0");
+        ingresosValueLabel = new JLabel("$0"); // Inicialización de ingresosValueLabel
         ingresosValueLabel.setFont(new Font("Arial", Font.BOLD, 14));
         ingresosValueLabel.setHorizontalAlignment(SwingConstants.CENTER);
         ingresosPanel.add(ingresosLabel, BorderLayout.NORTH);
@@ -165,7 +163,7 @@ public class MainView extends JFrame {
         JLabel gastosLabel = new JLabel("Gastos");
         gastosLabel.setFont(new Font("Arial", Font.BOLD, 14));
         gastosLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        JLabel gastosValueLabel = new JLabel("$0");
+        gastosValueLabel = new JLabel("$0"); // Inicialización de gastosValueLabel
         gastosValueLabel.setFont(new Font("Arial", Font.BOLD, 14));
         gastosValueLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gastosPanel.add(gastosLabel, BorderLayout.NORTH);
@@ -177,7 +175,7 @@ public class MainView extends JFrame {
         JLabel beneficioNetoLabel = new JLabel("Beneficio Neto");
         beneficioNetoLabel.setFont(new Font("Arial", Font.BOLD, 14));
         beneficioNetoLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        JLabel beneficioNetoValueLabel = new JLabel("$0");
+        beneficioNetoValueLabel = new JLabel("$0"); // Inicialización de beneficioNetoValueLabel
         beneficioNetoValueLabel.setFont(new Font("Arial", Font.BOLD, 14));
         beneficioNetoValueLabel.setHorizontalAlignment(SwingConstants.CENTER);
         beneficioNetoPanel.add(beneficioNetoLabel, BorderLayout.NORTH);
@@ -271,6 +269,19 @@ public class MainView extends JFrame {
         return panel;
     }
 
+    public void actualizarTotales() {
+        TablaTransacciones tablaTransacciones = new TablaTransacciones();
+        double totalIngresos = tablaTransacciones.obtenerTotalIngresos(idUsuarioActual);
+        double totalGastos = tablaTransacciones.obtenerTotalGastos(idUsuarioActual);
+
+        // Calcular el beneficio neto
+        double beneficioNeto = totalIngresos - totalGastos;
+
+        // Actualizar las etiquetas
+        ingresosValueLabel.setText(String.format("%.2f €", totalIngresos));
+        gastosValueLabel.setText(String.format("%.2f €", totalGastos));
+        beneficioNetoValueLabel.setText(String.format("%.2f €", beneficioNeto));
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
