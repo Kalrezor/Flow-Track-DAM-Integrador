@@ -1,11 +1,12 @@
 package com.dam.finanzas.view;
 
 import javax.swing.*;
-
 import com.dam.finanzas.control.AppControlador;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class RegisterView extends JFrame {
     private JTextField txtUsuario;
@@ -13,6 +14,7 @@ public class RegisterView extends JFrame {
     private JPasswordField txtContraseña;
     private JPasswordField txtRepetirContraseña;
     private JButton btnCrearCuenta;
+    private JButton btnVolverLogin; // Botón para volver a la ventana de login
 
     public RegisterView() {
         setTitle("Crear Cuenta");
@@ -174,10 +176,35 @@ public class RegisterView extends JFrame {
         GridBagConstraints gbcCrearCuenta = new GridBagConstraints();
         gbcCrearCuenta.gridx = 0;
         gbcCrearCuenta.gridy = 5;
-        gbcCrearCuenta.gridwidth = 2;
+        gbcCrearCuenta.gridwidth = 1;
         gbcCrearCuenta.anchor = GridBagConstraints.CENTER;
         gbcCrearCuenta.insets = new Insets(10, 10, 10, 10);
         registerPanel.add(btnCrearCuenta, gbcCrearCuenta);
+
+        btnVolverLogin = new JButton("Volver a Login");
+        btnVolverLogin.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        btnVolverLogin.setBackground(new Color(44, 62, 80));
+        btnVolverLogin.setForeground(Color.WHITE);
+        GridBagConstraints gbcVolverLogin = new GridBagConstraints();
+        gbcVolverLogin.gridx = 1;
+        gbcVolverLogin.gridy = 5;
+        gbcVolverLogin.anchor = GridBagConstraints.CENTER;
+        gbcVolverLogin.insets = new Insets(10, 10, 10, 10);
+        registerPanel.add(btnVolverLogin, gbcVolverLogin);
+
+        btnVolverLogin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Cerrar la ventana actual
+                dispose();
+
+                // Abrir la ventana de login
+                LoginView loginView = new LoginView();
+                AppControlador controller = new AppControlador(loginView, null); // Asegúrate de pasar el controlador adecuado
+                loginView.setController(controller);
+                loginView.setVisible(true);
+            }
+        });
 
         GridBagConstraints gbcRegisterPanel = new GridBagConstraints();
         gbcRegisterPanel.gridx = 0;
@@ -186,13 +213,15 @@ public class RegisterView extends JFrame {
         contentPane.add(registerPanel, gbcRegisterPanel);
 
         setContentPane(contentPane);
+
+        // Establecer un FocusTraversalPolicy personalizado para evitar el foco inicial
+        setFocusTraversalPolicy(new CustomFocusTraversalPolicy());
     }
 
     public void setController(AppControlador controller) {
         btnCrearCuenta.setActionCommand("Registrarse"); // Establece el actionCommand
         btnCrearCuenta.addActionListener(controller);
     }
-
 
     public String getUsuario() {
         return txtUsuario.getText().equals("Usuario") ? "" : txtUsuario.getText();
@@ -208,5 +237,33 @@ public class RegisterView extends JFrame {
 
     public String getRepetirContrasena() {
         return new String(txtRepetirContraseña.getPassword()).equals("Repetir Contraseña") ? "" : new String(txtRepetirContraseña.getPassword());
+    }
+
+    // Clase personalizada para evitar el foco inicial
+    private class CustomFocusTraversalPolicy extends FocusTraversalPolicy {
+        @Override
+        public Component getDefaultComponent(Container focusCycleRoot) {
+            return null; // No establecer foco en ningún componente al inicio
+        }
+
+        @Override
+        public Component getFirstComponent(Container focusCycleRoot) {
+            return null; // No establecer foco en ningún componente al inicio
+        }
+
+        @Override
+        public Component getLastComponent(Container focusCycleRoot) {
+            return null; // No establecer foco en ningún componente al inicio
+        }
+
+        @Override
+        public Component getComponentAfter(Container focusCycleRoot, Component aComponent) {
+            return null; // No establecer foco en ningún componente al inicio
+        }
+
+        @Override
+        public Component getComponentBefore(Container focusCycleRoot, Component aComponent) {
+            return null; // No establecer foco en ningún componente al inicio
+        }
     }
 }

@@ -1,7 +1,6 @@
 package com.dam.finanzas.view;
 
 import javax.swing.*;
-
 import com.dam.finanzas.control.AppControlador;
 import java.awt.*;
 import java.awt.event.FocusEvent;
@@ -134,6 +133,9 @@ public class LoginView extends JFrame {
         contentPane.add(loginPanel, gbcLoginPanel);
 
         setContentPane(contentPane);
+
+     // Establecer un FocusTraversalPolicy personalizado para evitar el foco inicial
+        setFocusTraversalPolicy(new CustomFocusTraversalPolicy());
     }
 
     public void setController(AppControlador controller) {
@@ -151,5 +153,33 @@ public class LoginView extends JFrame {
 
     public String getContrasena() {
         return new String(txtContraseña.getPassword()).equals("Contraseña") ? "" : new String(txtContraseña.getPassword());
+    }
+    
+ // Clase personalizada para evitar el foco inicial
+    private class CustomFocusTraversalPolicy extends FocusTraversalPolicy {
+        @Override
+        public Component getDefaultComponent(Container focusCycleRoot) {
+            return null; // No establecer foco en ningún componente al inicio
+        }
+
+        @Override
+        public Component getFirstComponent(Container focusCycleRoot) {
+            return null; // No establecer foco en ningún componente al inicio
+        }
+
+        @Override
+        public Component getLastComponent(Container focusCycleRoot) {
+            return null; // No establecer foco en ningún componente al inicio
+        }
+
+        @Override
+        public Component getComponentAfter(Container focusCycleRoot, Component aComponent) {
+            return null; // No establecer foco en ningún componente al inicio
+        }
+
+        @Override
+        public Component getComponentBefore(Container focusCycleRoot, Component aComponent) {
+            return null; // No establecer foco en ningún componente al inicio
+        }
     }
 }

@@ -5,6 +5,7 @@ import javax.swing.*;
 import com.dam.finanzas.view.LoginView;
 import com.dam.finanzas.view.MainView;
 import com.dam.finanzas.view.RegisterView;
+
 import com.dam.finanzas.model.Usuario;
 import com.dam.finanzas.model.bbdd.TablaUsuario;
 import com.dam.finanzas.model.SesionUsuario;
@@ -42,6 +43,10 @@ public class AppControlador implements java.awt.event.ActionListener {
             }
         } else if ("Crear Cuenta".equals(actionCommand)) {
             vlog.dispose();
+            if (vreg == null) {
+                vreg = new RegisterView();
+                vreg.setController(this); // Asegúrate de que el controlador esté configurado
+            }
             vreg.setVisible(true);
         } else if ("Registrarse".equals(actionCommand)) {
             String nombre = vreg.getUsuario();
