@@ -5,7 +5,12 @@ import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Map;
-import com.dam.finanzas.model.bbdd.TablaTransacciones;
+import com.dam.finanzas.model.bbdd.TablaIngresos;
+import com.dam.finanzas.model.bbdd.TablaGastos;
+import com.dam.finanzas.model.bbdd.TablaTransferencia;
+import com.dam.finanzas.model.Ingreso;
+import com.dam.finanzas.model.Gasto;
+import com.dam.finanzas.model.Transferencia;
 
 public class TransaccionesView {
     private Map<String, Double> gastosMap;
@@ -16,6 +21,9 @@ public class TransaccionesView {
         this.idUsuarioActual = idUsuarioActual;
     }
 
+    /**
+     * @wbp.parser.entryPoint
+     */
     public JPanel createTransaccionesPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.LIGHT_GRAY);
@@ -68,8 +76,9 @@ public class TransaccionesView {
                 String descripcion = descripcionField.getText();
 
                 if (cantidad > 0) {
-                    TablaTransacciones tablaTransacciones = new TablaTransacciones();
-                    int resultado = tablaTransacciones.registrarIngreso(idUsuarioActual, cantidad, descripcion);
+                    Ingreso ingreso = new Ingreso(idUsuarioActual, descripcion, cantidad, "CURRENT_DATE");
+                    TablaIngresos tablaIngresos = new TablaIngresos();
+                    int resultado = tablaIngresos.registrarIngreso(ingreso);
 
                     if (resultado > 0) {
                         JOptionPane.showMessageDialog(null, "Ingreso registrado: " + cantidad + "€", "Éxito", JOptionPane.INFORMATION_MESSAGE);
@@ -176,8 +185,9 @@ public class TransaccionesView {
                         return;
                     }
 
-                    TablaTransacciones tablaTransacciones = new TablaTransacciones();
-                    int resultado = tablaTransacciones.registrarGasto(idUsuarioActual, cantidad, descripcion, categoria);
+                    Gasto gasto = new Gasto(idUsuarioActual, descripcion, categoria, cantidad, "CURRENT_DATE");
+                    TablaGastos tablaGastos = new TablaGastos();
+                    int resultado = tablaGastos.registrarGasto(gasto);
 
                     if (resultado > 0) {
                         JOptionPane.showMessageDialog(null, "Gasto registrado: " + cantidad + "€ en " + categoria, "Éxito", JOptionPane.INFORMATION_MESSAGE);
@@ -300,8 +310,9 @@ public class TransaccionesView {
                 double cantidad = Double.parseDouble(cantidadField.getText());
 
                 if (cantidad > 0) {
-                    TablaTransacciones tablaTransacciones = new TablaTransacciones();
-                    int resultado = tablaTransacciones.registrarTransferencia(idUsuarioActual, 1, cantidad, asunto); // Asumiendo que el ID de destino es 1
+                    Transferencia transferencia = new Transferencia(idUsuarioActual, 1, cantidad, asunto); // Asumiendo que el ID de destino es 1
+                    TablaTransferencia tablaTransferencia = new TablaTransferencia();
+                    int resultado = tablaTransferencia.registrarTransferencia(transferencia);
 
                     if (resultado > 0) {
                         String mensaje = opcion.equals("Enviar Dinero")

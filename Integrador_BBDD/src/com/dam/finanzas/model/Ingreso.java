@@ -1,29 +1,19 @@
 package com.dam.finanzas.model;
 
 public class Ingreso {
-    private int idIngreso;
     private int idUsuario;
     private String descripcion;
     private double monto;
     private String fecha;
 
-    public Ingreso(int idIngreso, int idUsuario, String descripcion, double monto, String fecha) {
-        this.idIngreso = idIngreso;
+    public Ingreso(int idUsuario, String descripcion, double monto, String fecha) {
         this.idUsuario = idUsuario;
         this.descripcion = descripcion;
         this.monto = monto;
         this.fecha = fecha;
     }
 
-    // Getters y Setters
-    public int getIdIngreso() {
-        return idIngreso;
-    }
-
-    public void setIdIngreso(int idIngreso) {
-        this.idIngreso = idIngreso;
-    }
-
+    // Getters y setters
     public int getIdUsuario() {
         return idUsuario;
     }

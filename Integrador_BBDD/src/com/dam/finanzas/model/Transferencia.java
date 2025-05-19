@@ -1,29 +1,19 @@
 package com.dam.finanzas.model;
 
 public class Transferencia {
-    private int idTransferencia;
     private int idOrigen;
     private int idDestino;
     private double monto;
     private String descripcion;
 
-    public Transferencia(int idTransferencia, int idOrigen, int idDestino, double monto, String descripcion) {
-        this.idTransferencia = idTransferencia;
+    public Transferencia(int idOrigen, int idDestino, double monto, String descripcion) {
         this.idOrigen = idOrigen;
         this.idDestino = idDestino;
         this.monto = monto;
         this.descripcion = descripcion;
     }
 
-    // Getters y Setters
-    public int getIdTransferencia() {
-        return idTransferencia;
-    }
-
-    public void setIdTransferencia(int idTransferencia) {
-        this.idTransferencia = idTransferencia;
-    }
-
+    // Getters y setters
     public int getIdOrigen() {
         return idOrigen;
     }

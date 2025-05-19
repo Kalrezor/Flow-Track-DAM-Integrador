@@ -1,15 +1,13 @@
 package com.dam.finanzas.model;
 
 public class Gasto {
-    private int idGasto;
     private int idUsuario;
     private String descripcion;
     private String categoria;
     private double monto;
     private String fecha;
 
-    public Gasto(int idGasto, int idUsuario, String descripcion, String categoria, double monto, String fecha) {
-        this.idGasto = idGasto;
+    public Gasto(int idUsuario, String descripcion, String categoria, double monto, String fecha) {
         this.idUsuario = idUsuario;
         this.descripcion = descripcion;
         this.categoria = categoria;
@@ -17,15 +15,7 @@ public class Gasto {
         this.fecha = fecha;
     }
 
-    // Getters y Setters
-    public int getIdGasto() {
-        return idGasto;
-    }
-
-    public void setIdGasto(int idGasto) {
-        this.idGasto = idGasto;
-    }
-
+    // Getters y setters
     public int getIdUsuario() {
         return idUsuario;
     }

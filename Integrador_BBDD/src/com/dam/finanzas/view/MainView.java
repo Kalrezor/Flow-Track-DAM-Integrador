@@ -2,10 +2,14 @@ package com.dam.finanzas.view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import com.dam.finanzas.model.SesionUsuario;
-import com.dam.finanzas.model.bbdd.TablaTransacciones;
+import com.dam.finanzas.model.bbdd.TablaIngresos;
+import com.dam.finanzas.model.bbdd.TablaGastos;
+import com.dam.finanzas.model.bbdd.TablaTransferencia;
 
 public class MainView extends JFrame {
     private JPanel sidebar; // Barra lateral de Navegación
@@ -63,7 +67,7 @@ public class MainView extends JFrame {
 
     private JPanel createSidebar() {
         JPanel sidebar = new JPanel();
-        sidebar.setLayout(new GridLayout(7, 1)); // 7 botones (6 de contenido + 1 de salir)
+        sidebar.setLayout(new GridLayout(8, 1));
         sidebar.setOpaque(true);
         sidebar.setBackground(new Color(44, 62, 80));
         sidebar.setPreferredSize(new Dimension(150, 600));
@@ -75,6 +79,7 @@ public class MainView extends JFrame {
             "Deudas",
             "Objetivos",
             "Estadísticas",
+            "Usuario",
             "Salir"
         };
 
@@ -108,6 +113,10 @@ public class MainView extends JFrame {
                         cardLayout.show(contentPanel, "ESTADISTICAS");
                         System.out.println("Estadísticas");
                         break;
+                    case "Usuario":
+                        cardLayout.show(contentPanel, "USUARIO");
+                        System.out.println("Usuario");
+                        break;
                     case "Salir":
                         System.exit(0);
                         break;
@@ -136,7 +145,11 @@ public class MainView extends JFrame {
         datosFinancierosPanel.setBackground(Color.LIGHT_GRAY);
 
         // Mes actual
-        JLabel mesActualLabel = new JLabel("Mes Actual: Enero 2023");
+        LocalDate fechaActual = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
+        String mesActual = fechaActual.format(formatter);
+
+        JLabel mesActualLabel = new JLabel("Mes Actual: " + mesActual);
         mesActualLabel.setFont(new Font("Arial", Font.BOLD, 14));
         mesActualLabel.setHorizontalAlignment(SwingConstants.CENTER);
         datosFinancierosPanel.add(mesActualLabel, BorderLayout.NORTH);
@@ -151,7 +164,7 @@ public class MainView extends JFrame {
         JLabel ingresosLabel = new JLabel("Ingresos");
         ingresosLabel.setFont(new Font("Arial", Font.BOLD, 14));
         ingresosLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        ingresosValueLabel = new JLabel("$0"); // Inicialización de ingresosValueLabel
+        ingresosValueLabel = new JLabel("0 €"); // Inicialización de ingresosValueLabel
         ingresosValueLabel.setFont(new Font("Arial", Font.BOLD, 14));
         ingresosValueLabel.setHorizontalAlignment(SwingConstants.CENTER);
         ingresosPanel.add(ingresosLabel, BorderLayout.NORTH);
@@ -163,7 +176,7 @@ public class MainView extends JFrame {
         JLabel gastosLabel = new JLabel("Gastos");
         gastosLabel.setFont(new Font("Arial", Font.BOLD, 14));
         gastosLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gastosValueLabel = new JLabel("$0"); // Inicialización de gastosValueLabel
+        gastosValueLabel = new JLabel("0 €"); // Inicialización de gastosValueLabel
         gastosValueLabel.setFont(new Font("Arial", Font.BOLD, 14));
         gastosValueLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gastosPanel.add(gastosLabel, BorderLayout.NORTH);
@@ -175,7 +188,7 @@ public class MainView extends JFrame {
         JLabel beneficioNetoLabel = new JLabel("Beneficio Neto");
         beneficioNetoLabel.setFont(new Font("Arial", Font.BOLD, 14));
         beneficioNetoLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        beneficioNetoValueLabel = new JLabel("$0"); // Inicialización de beneficioNetoValueLabel
+        beneficioNetoValueLabel = new JLabel("0 €"); // Inicialización de beneficioNetoValueLabel
         beneficioNetoValueLabel.setFont(new Font("Arial", Font.BOLD, 14));
         beneficioNetoValueLabel.setHorizontalAlignment(SwingConstants.CENTER);
         beneficioNetoPanel.add(beneficioNetoLabel, BorderLayout.NORTH);
@@ -189,7 +202,7 @@ public class MainView extends JFrame {
         // Organizar todo
         datosFinancierosPanel.add(finanzasPanel, BorderLayout.CENTER);
 
-        // Tabla de Transferencias
+     // Tabla de Transferencias
         JPanel transaccionesPanel = new JPanel(new BorderLayout());
         transaccionesPanel.setBackground(new Color(192, 192, 192));
         transaccionesPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -203,13 +216,14 @@ public class MainView extends JFrame {
         transferenciasLabel.setHorizontalAlignment(SwingConstants.CENTER);
         transaccionesPanel.add(transferenciasLabel, BorderLayout.NORTH);
 
-        // Ejemplo de tabla de transferencias
-        String[] columnNamesTransferencias = {"Remitente", "Destinatario", "Monto"};
-        Object[][] dataTransferencias = {
-            {"Usuario1", "Usuario2", "$100"},
-            {"Usuario3", "Usuario4", "$200"},
-            {"Usuario5", "Usuario6", "$300"}
-        };
+        // Obtener datos de transferencias de la base de datos
+        TablaTransferencia tablaTransferencia = new TablaTransferencia();
+        Object[][] dataTransferencias = tablaTransferencia.obtenerTransferencias(idUsuarioActual);
+
+        // Nombres de las columnas
+        String[] columnNamesTransferencias = {"Remitente", "Destinatario", "Cantidad"};
+
+        // Crear la tabla de transferencias
         JTable transferenciasTable = new JTable(dataTransferencias, columnNamesTransferencias);
         JScrollPane scrollPane = new JScrollPane(transferenciasTable);
         transaccionesPanel.add(scrollPane, BorderLayout.CENTER);
@@ -229,30 +243,96 @@ public class MainView extends JFrame {
         rightHeader.add(userNameLabel, BorderLayout.CENTER);
         rightPanel.add(rightHeader, BorderLayout.NORTH);
 
-        // Lista de categorías de gastos
-        JPanel gastosListPanel = new JPanel(new GridLayout(0, 1));
+        // Panel para la lista de gastos
+        JPanel gastosListPanel = new JPanel(new GridLayout(0, 1, 0, 1));
         gastosListPanel.setBackground(Color.LIGHT_GRAY);
-        String[] categorias = {
-            "", // Opción vacía predeterminada
-            "Ocio y entretenimiento",
-            "Ropa y accesorios",
-            "Tecnología y gadgets",
-            "Salud y cuidado personal",
-            "Transporte y movilidad",
-            "Comida y supermercado",
-            "Hogar y decoración",
-            "Educación y formación"
-        };
-        for (String categoria : categorias) {
-            JPanel categoriaPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            categoriaPanel.setBackground(Color.LIGHT_GRAY);
-            JLabel nombreCategoria = new JLabel(categoria.isEmpty() ? "Sin categoría" : categoria);
-            JLabel montoCategoria = new JLabel("0€");
-            categoriaPanel.add(nombreCategoria);
-            categoriaPanel.add(Box.createHorizontalGlue()); // Espacio flexible
-            categoriaPanel.add(montoCategoria);
-            gastosListPanel.add(categoriaPanel);
-        }
+
+        // Título "Tipos de Gastos:"
+        JLabel tiposGastosLabel = new JLabel("Tipos de Gastos:");
+        tiposGastosLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        tiposGastosLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        gastosListPanel.add(tiposGastosLabel);
+
+        JLabel ocioLabel = new JLabel("Ocio y entretenimiento  ");
+        ocioLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        ocioLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        gastosListPanel.add(ocioLabel);
+
+        JLabel ociodLabel = new JLabel("0" + " €");
+        ociodLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        ociodLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        gastosListPanel.add(ociodLabel);
+
+        JLabel ropaLabel = new JLabel("Ropa y accesorios  ");
+        ropaLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        ropaLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        gastosListPanel.add(ropaLabel);
+
+        JLabel ropadLabel = new JLabel("0" + " €");
+        ropadLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        ropadLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        gastosListPanel.add(ropadLabel);
+
+        JLabel tecnoLabel = new JLabel("Tecnología y gadgets  ");
+        tecnoLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        tecnoLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        gastosListPanel.add(tecnoLabel);
+
+        JLabel tecnodLabel = new JLabel("0" + " €");
+        tecnodLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        tecnodLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        gastosListPanel.add(tecnodLabel);
+
+        JLabel saludLabel = new JLabel("Salud y cuidado personal  ");
+        saludLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        saludLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        gastosListPanel.add(saludLabel);
+
+        JLabel saluddLabel = new JLabel("0" + " €");
+        saluddLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        saluddLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        gastosListPanel.add(saluddLabel);
+
+        JLabel transpLabel = new JLabel("Transporte y movilidad  ");
+        transpLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        transpLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        gastosListPanel.add(transpLabel);
+
+        JLabel transpdLabel = new JLabel("0" + " €");
+        transpdLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        transpdLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        gastosListPanel.add(transpdLabel);
+
+        JLabel comidaLabel = new JLabel("Comida y supermercado  ");
+        comidaLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        comidaLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        gastosListPanel.add(comidaLabel);
+
+        JLabel comidadLabel = new JLabel("0" + " €");
+        comidadLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        comidadLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        gastosListPanel.add(comidadLabel);
+
+        JLabel hogarLabel = new JLabel("Hogar y decoración  ");
+        hogarLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        hogarLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        gastosListPanel.add(hogarLabel);
+
+        JLabel hogardLabel = new JLabel("0" + " €");
+        hogardLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        hogardLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        gastosListPanel.add(hogardLabel);
+
+        JLabel educLabel = new JLabel("Educación y formación  ");
+        educLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        educLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        gastosListPanel.add(educLabel);
+
+        JLabel educdLabel = new JLabel("0" + " €");
+        educdLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        educdLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        gastosListPanel.add(educdLabel);
+
         rightPanel.add(gastosListPanel, BorderLayout.CENTER);
 
         // Organizar todo
@@ -270,9 +350,11 @@ public class MainView extends JFrame {
     }
 
     public void actualizarTotales() {
-        TablaTransacciones tablaTransacciones = new TablaTransacciones();
-        double totalIngresos = tablaTransacciones.obtenerTotalIngresos(idUsuarioActual);
-        double totalGastos = tablaTransacciones.obtenerTotalGastos(idUsuarioActual);
+        TablaIngresos tablaIngresos = new TablaIngresos();
+        double totalIngresos = tablaIngresos.obtenerTotalIngresos(idUsuarioActual);
+
+        TablaGastos tablaGastos = new TablaGastos();
+        double totalGastos = tablaGastos.obtenerTotalGastos(idUsuarioActual);
 
         // Calcular el beneficio neto
         double beneficioNeto = totalIngresos - totalGastos;

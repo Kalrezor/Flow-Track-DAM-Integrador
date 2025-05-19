@@ -3,6 +3,9 @@ package com.dam.finanzas.model.bbdd;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import com.dam.finanzas.model.Transferencia;
 
 public class TablaTransferencia {
@@ -55,5 +58,97 @@ public class TablaTransferencia {
         }
 
         return res;
+    }
+
+    public Object[][] obtenerTransferencias(int idUsuario) {
+        List<Object[]> transferencias = new ArrayList<>();
+        String query = "SELECT id_origen, id_destino, monto, descripcion FROM Transferencia WHERE id_origen = ? OR id_destino = ?";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = conBBDD.getConexion();
+            pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, idUsuario);
+            pstmt.setInt(2, idUsuario);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                int idOrigen = rs.getInt("id_origen");
+                int idDestino = rs.getInt("id_destino");
+                double monto = rs.getDouble("monto");
+                String descripcion = rs.getString("descripcion");
+
+                // Obtener nombres de usuario para id_origen e id_destino
+                String remitente = obtenerNombreUsuario(idOrigen);
+                String destinatario = obtenerNombreUsuario(idDestino);
+
+                transferencias.add(new Object[]{remitente, destinatario, monto});
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Object[][] data = new Object[transferencias.size()][3];
+        for (int i = 0; i < transferencias.size(); i++) {
+            data[i] = transferencias.get(i);
+        }
+
+        return data;
+    }
+
+    // Método auxiliar para obtener el nombre de usuario a partir del ID
+    private String obtenerNombreUsuario(int idUsuario) {
+        String nombreUsuario = "Usuario Desconocido";
+        String query = "SELECT nombre FROM Usuario WHERE id_usuario = ?";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = conBBDD.getConexion();
+            pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, idUsuario);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                nombreUsuario = rs.getString("nombre");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return nombreUsuario;
     }
 }
