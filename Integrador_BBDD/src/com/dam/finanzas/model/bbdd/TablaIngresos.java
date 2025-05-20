@@ -3,6 +3,8 @@ package com.dam.finanzas.model.bbdd;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import com.dam.finanzas.model.Ingreso;
 
 public class TablaIngresos {
@@ -59,7 +61,7 @@ public class TablaIngresos {
 
     public double obtenerTotalIngresos(int idUsuario) {
         double total = 0;
-        String query = "SELECT SUM(monto) AS total FROM " + NOM_TABLA_ING + " WHERE " + NOM_COL_ID_USER + " = ?";
+        String query = "SELECT SUM(monto) AS total FROM Ingreso WHERE id_usuario = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -87,11 +89,12 @@ public class TablaIngresos {
                 if (con != null) {
                     con.close();
                 }
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
 
         return total;
     }
+
 }

@@ -3,6 +3,8 @@ package com.dam.finanzas.model.bbdd;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import com.dam.finanzas.model.Gasto;
 
 public class TablaGastos {
@@ -61,7 +63,7 @@ public class TablaGastos {
 
     public double obtenerTotalGastos(int idUsuario) {
         double total = 0;
-        String query = "SELECT SUM(monto) AS total FROM " + NOM_TABLA_GAS + " WHERE " + NOM_COL_ID_USER + " = ?";
+        String query = "SELECT SUM(monto) AS total FROM Gasto WHERE id_usuario = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -89,11 +91,12 @@ public class TablaGastos {
                 if (con != null) {
                     con.close();
                 }
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
 
         return total;
     }
+
 }

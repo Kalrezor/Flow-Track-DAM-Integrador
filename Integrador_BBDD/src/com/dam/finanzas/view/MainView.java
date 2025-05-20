@@ -63,6 +63,9 @@ public class MainView extends JFrame {
         contentPanel.add(objetivosPanel, "OBJETIVOS");
 
         getContentPane().add(contentPanel, BorderLayout.CENTER);
+
+        // Actualizar los totales al inicio
+        actualizarTotales();
     }
 
     private JPanel createSidebar() {
