@@ -13,7 +13,6 @@ public class Transferencia {
         this.descripcion = descripcion;
     }
 
-    // Getters y setters
     public int getIdOrigen() {
         return idOrigen;
     }

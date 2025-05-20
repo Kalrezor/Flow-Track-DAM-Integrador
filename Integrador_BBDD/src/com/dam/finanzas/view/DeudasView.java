@@ -21,13 +21,13 @@ public class DeudasView {
     private DefaultTableModel tableModel;
     private JTable table;
     private List<Deuda> deudasList;
-    private int idUsuarioActual; // ID del usuario actual
+    private int idUsuarioActual;
 
     public DeudasView(int idUsuarioActual) {
         this.idUsuarioActual = idUsuarioActual;
         deudasList = new ArrayList<>();
         initializeTableModel();
-        cargarDeudasUsuario(); // Cargar deudas al iniciar
+        cargarDeudasUsuario();
     }
 
     private void initializeTableModel() {
@@ -39,7 +39,7 @@ public class DeudasView {
     private void cargarDeudasUsuario() {
         TablaDeuda tablaDeuda = new TablaDeuda();
         deudasList = tablaDeuda.obtenerDeudasPorUsuario(idUsuarioActual);
-        actualizarTablaDeudas(); // Actualizar la tabla con los datos cargados
+        actualizarTablaDeudas();
     }
 
     public JPanel createDeudasPanel() {
@@ -169,12 +169,10 @@ public class DeudasView {
 
         panel.add(inputPanel, BorderLayout.NORTH);
 
-        // Tabla de deudas
-        String[] columnNames = {"Descripción", "Monto Total", "Monto Pendiente", "Fecha Vencimiento", "Estado"};
-        tableModel = new DefaultTableModel(columnNames, 0);
-        table = new JTable(tableModel);
-        table.getTableHeader().setReorderingAllowed(false); // Desactivar la capacidad de reordenar las columnas
+        /// Tabla de Deudas
         JScrollPane scrollPane = new JScrollPane(table);
+        panel.add(scrollPane, BorderLayout.CENTER);
+        table.getTableHeader().setReorderingAllowed(false);
 
         // Botón para editar deuda
         JButton editButton = new JButton("Editar Deuda");
@@ -215,7 +213,7 @@ public class DeudasView {
             int resultado = tablaDeuda.registrarDeuda(nuevaDeuda);
 
             if (resultado > 0) {
-                cargarDeudasUsuario(); // Recargar deudas después de registrar una nueva
+                cargarDeudasUsuario();
                 JOptionPane.showMessageDialog(null, "Deuda registrada exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();
             } else {
@@ -263,7 +261,7 @@ public class DeudasView {
                 int resultado = tablaDeuda.actualizarDeuda(deudaSeleccionada);
 
                 if (resultado > 0) {
-                    cargarDeudasUsuario(); // Recargar deudas después de editar
+                    cargarDeudasUsuario();
                     JOptionPane.showMessageDialog(null, "Deuda actualizada exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "Error al actualizar la deuda", "Error", JOptionPane.ERROR_MESSAGE);
@@ -275,7 +273,7 @@ public class DeudasView {
     }
 
     private void actualizarTablaDeudas() {
-        tableModel.setRowCount(0);
+    	tableModel.setRowCount(0);
         for (Deuda deuda : deudasList) {
             Object[] rowData = {
                 deuda.getDescripcion(),
@@ -287,4 +285,5 @@ public class DeudasView {
             tableModel.addRow(rowData);
         }
     }
+
 }

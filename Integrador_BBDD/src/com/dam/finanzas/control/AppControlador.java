@@ -45,7 +45,7 @@ public class AppControlador implements java.awt.event.ActionListener {
             vlog.dispose();
             if (vreg == null) {
                 vreg = new RegisterView();
-                vreg.setController(this); // Asegúrate de que el controlador esté configurado
+                vreg.setController(this);
             }
             vreg.setVisible(true);
         } else if ("Registrarse".equals(actionCommand)) {

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ObjetivosView {
-    private List<ObjetivoFinanciero> objetivosList; // Lista para almacenar los objetivos
+    private List<ObjetivoFinanciero> objetivosList;
     private DefaultTableModel tableModel;
     private JTable table;
     private int idUsuarioActual;
@@ -168,25 +168,21 @@ public class ObjetivosView {
                     return;
                 }
 
-                // Calcular el tiempo necesario para alcanzar el objetivo
                 int mesesNecesarios = (int) Math.ceil(costo / ahorroMensualDisponible);
 
-                // Crear un nuevo objetivo financiero
                 ObjetivoFinanciero nuevoObjetivo = new ObjetivoFinanciero(
-                    0, // ID del objetivo (se generará en la base de datos)
-                    1, // ID del usuario (deberías obtenerlo de la sesión actual)
+                    0,
+                    1,
                     descripcion,
                     costo,
                     ahorroMensualDisponible,
-                    "2023-12-31", // Fecha meta (deberías calcularla o establecerla)
-                    "En progreso" // Estado inicial
+                    "2023-12-31",
+                    "En progreso"
                 );
                 objetivosList.add(nuevoObjetivo);
 
-                // Actualizar la tabla
                 updateTable();
 
-                // Mostrar mensaje con el tiempo estimado
                 JOptionPane.showMessageDialog(
                     panel,
                     String.format("Con tus finanzas actuales, tardarás aproximadamente %d meses en cumplir este objetivo.", mesesNecesarios),
@@ -194,7 +190,6 @@ public class ObjetivosView {
                     JOptionPane.INFORMATION_MESSAGE
                 );
 
-                // Limpiar los campos
                 descripcionField.setText("");
                 costoField.setText("");
                 gananciasMensualesField.setText("");
@@ -256,7 +251,6 @@ public class ObjetivosView {
     }*/
 
 
-    // Método para actualizar la tabla
     private void updateTable() {
         tableModel.setRowCount(0);
         for (int i = 0; i < objetivosList.size(); i++) {

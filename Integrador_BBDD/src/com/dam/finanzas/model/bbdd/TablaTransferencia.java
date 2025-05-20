@@ -81,7 +81,6 @@ public class TablaTransferencia {
                 double monto = rs.getDouble("monto");
                 String descripcion = rs.getString("descripcion");
 
-                // Obtener nombres de usuario para id_origen e id_destino
                 String remitente = obtenerNombreUsuario(idOrigen);
                 String destinatario = obtenerNombreUsuario(idDestino);
 
@@ -113,7 +112,6 @@ public class TablaTransferencia {
         return data;
     }
 
-    // Método auxiliar para obtener el nombre de usuario a partir del ID
     private String obtenerNombreUsuario(int idUsuario) {
         String nombreUsuario = "Usuario Desconocido";
         String query = "SELECT nombre FROM Usuario WHERE id_usuario = ?";

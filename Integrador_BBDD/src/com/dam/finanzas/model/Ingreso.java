@@ -13,7 +13,6 @@ public class Ingreso {
         this.fecha = fecha;
     }
 
-    // Getters y setters
     public int getIdUsuario() {
         return idUsuario;
     }

@@ -19,7 +19,6 @@ public class ObjetivoFinanciero {
         this.estado = estado;
     }
 
-    // Getters y Setters
     public int getIdObjetivo() {
         return idObjetivo;
     }

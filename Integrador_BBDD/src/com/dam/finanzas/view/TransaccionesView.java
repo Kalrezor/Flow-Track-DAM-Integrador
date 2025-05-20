@@ -14,16 +14,13 @@ import com.dam.finanzas.model.Transferencia;
 
 public class TransaccionesView {
     private Map<String, Double> gastosMap;
-    private int idUsuarioActual; // ID del usuario actual
+    private int idUsuarioActual;
 
     public TransaccionesView(Map<String, Double> gastosMap, int idUsuarioActual) {
         this.gastosMap = gastosMap;
         this.idUsuarioActual = idUsuarioActual;
     }
 
-    /**
-     * @wbp.parser.entryPoint
-     */
     public JPanel createTransaccionesPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.LIGHT_GRAY);
@@ -85,7 +82,6 @@ public class TransaccionesView {
                         cantidadField.setText("");
                         descripcionField.setText("");
 
-                        // Actualizar los totales en MainView
                         MainView mainView = (MainView) SwingUtilities.getWindowAncestor(registrarButton);
                         if (mainView != null) {
                             mainView.actualizarTotales();
@@ -194,7 +190,6 @@ public class TransaccionesView {
                         cantidadField.setText("");
                         descripcionField.setText("");
 
-                        // Actualizar los totales en MainView
                         MainView mainView = (MainView) SwingUtilities.getWindowAncestor(registrarButton);
                         if (mainView != null) {
                             mainView.actualizarTotales();

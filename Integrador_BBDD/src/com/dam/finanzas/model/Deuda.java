@@ -19,12 +19,10 @@ public class Deuda {
         this.estado = estado;
     }
 
-    // Constructor adicional para manejar casos donde no se proporciona el ID de la deuda
     public Deuda(int idUsuario, double montoTotal, double montoPendiente, String fechaVencimiento, String descripcion, String estado) {
         this(0, idUsuario, montoTotal, montoPendiente, fechaVencimiento, descripcion, estado);
     }
 
-    // Getters y Setters
     public int getIdDeuda() {
         return idDeuda;
     }

@@ -134,7 +134,6 @@ public class LoginView extends JFrame {
 
         setContentPane(contentPane);
 
-     // Establecer un FocusTraversalPolicy personalizado para evitar el foco inicial
         setFocusTraversalPolicy(new CustomFocusTraversalPolicy());
     }
 
@@ -155,31 +154,31 @@ public class LoginView extends JFrame {
         return new String(txtContraseña.getPassword()).equals("Contraseña") ? "" : new String(txtContraseña.getPassword());
     }
     
- // Clase personalizada para evitar el foco inicial
+ 	// Clase personalizada para evitar el foco inicial
     private class CustomFocusTraversalPolicy extends FocusTraversalPolicy {
         @Override
         public Component getDefaultComponent(Container focusCycleRoot) {
-            return null; // No establecer foco en ningún componente al inicio
+            return null;
         }
 
         @Override
         public Component getFirstComponent(Container focusCycleRoot) {
-            return null; // No establecer foco en ningún componente al inicio
+            return null;
         }
 
         @Override
         public Component getLastComponent(Container focusCycleRoot) {
-            return null; // No establecer foco en ningún componente al inicio
+            return null;
         }
 
         @Override
         public Component getComponentAfter(Container focusCycleRoot, Component aComponent) {
-            return null; // No establecer foco en ningún componente al inicio
+            return null;
         }
 
         @Override
         public Component getComponentBefore(Container focusCycleRoot, Component aComponent) {
-            return null; // No establecer foco en ningún componente al inicio
+            return null;
         }
     }
 }

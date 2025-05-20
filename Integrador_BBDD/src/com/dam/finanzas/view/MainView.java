@@ -12,14 +12,14 @@ import com.dam.finanzas.model.bbdd.TablaGastos;
 import com.dam.finanzas.model.bbdd.TablaTransferencia;
 
 public class MainView extends JFrame {
-    private JPanel sidebar; // Barra lateral de Navegación
-    private CardLayout cardLayout; // Layout para cambiar entre pantallas
-    private JPanel contentPanel; // El panel Principal que contiene las vistas
-    private Map<String, Double> gastosMap; // Mapa para almacenar los gastos por categoría
-    private int idUsuarioActual; // ID del usuario actual
-    private JLabel ingresosValueLabel; // Etiqueta para mostrar el total de ingresos
-    private JLabel gastosValueLabel; // Etiqueta para mostrar el total de gastos
-    private JLabel beneficioNetoValueLabel; // Etiqueta para mostrar el beneficio neto
+    private JPanel sidebar;
+    private CardLayout cardLayout;
+    private JPanel contentPanel;
+    private Map<String, Double> gastosMap;
+    private int idUsuarioActual;
+    private JLabel ingresosValueLabel;
+    private JLabel gastosValueLabel;
+    private JLabel beneficioNetoValueLabel;
 
     public MainView(int idUsuarioActual) {
         this.idUsuarioActual = idUsuarioActual;
@@ -27,7 +27,7 @@ public class MainView extends JFrame {
         setSize(862, 601);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        gastosMap = new HashMap<>(); // Inicializar el mapa de gastos
+        gastosMap = new HashMap<>();
         initComponents();
     }
 
@@ -36,10 +36,10 @@ public class MainView extends JFrame {
 
         // Barra lateral
         sidebar = createSidebar();
-        getContentPane().add(sidebar, BorderLayout.WEST); // colocar el sidebar a la izquierda
+        getContentPane().add(sidebar, BorderLayout.WEST);
 
         // Contenedor principal con CardLayout
-        cardLayout = new CardLayout(); // Creacion Layout para cambiar entre pantallas
+        cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
         contentPanel.setBackground(Color.LIGHT_GRAY);
 
@@ -64,7 +64,6 @@ public class MainView extends JFrame {
 
         getContentPane().add(contentPanel, BorderLayout.CENTER);
 
-        // Actualizar los totales al inicio
         actualizarTotales();
     }
 
@@ -75,7 +74,6 @@ public class MainView extends JFrame {
         sidebar.setBackground(new Color(44, 62, 80));
         sidebar.setPreferredSize(new Dimension(150, 600));
 
-        // Botones con la navegacion del menu
         String[] botones = {
             "Inicio",
             "Transacciones",
@@ -152,13 +150,13 @@ public class MainView extends JFrame {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
         String mesActual = fechaActual.format(formatter);
 
-        JLabel mesActualLabel = new JLabel("Mes Actual: " + mesActual);
+        JLabel mesActualLabel = new JLabel(mesActual);
         mesActualLabel.setFont(new Font("Arial", Font.BOLD, 14));
         mesActualLabel.setHorizontalAlignment(SwingConstants.CENTER);
         datosFinancierosPanel.add(mesActualLabel, BorderLayout.NORTH);
 
         // Recuadro para Ingresos, Gastos y Beneficio Neto
-        JPanel finanzasPanel = new JPanel(new GridLayout(1, 3, 10, 0)); // Una fila, tres columnas, espacio entre elementos
+        JPanel finanzasPanel = new JPanel(new GridLayout(1, 3, 10, 0));
         finanzasPanel.setBackground(new Color(192, 192, 192));
 
         // Recuadro para Ingresos
@@ -167,7 +165,7 @@ public class MainView extends JFrame {
         JLabel ingresosLabel = new JLabel("Ingresos");
         ingresosLabel.setFont(new Font("Arial", Font.BOLD, 14));
         ingresosLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        ingresosValueLabel = new JLabel("0 €"); // Inicialización de ingresosValueLabel
+        ingresosValueLabel = new JLabel("0 €");
         ingresosValueLabel.setFont(new Font("Arial", Font.BOLD, 14));
         ingresosValueLabel.setHorizontalAlignment(SwingConstants.CENTER);
         ingresosPanel.add(ingresosLabel, BorderLayout.NORTH);
@@ -179,7 +177,7 @@ public class MainView extends JFrame {
         JLabel gastosLabel = new JLabel("Gastos");
         gastosLabel.setFont(new Font("Arial", Font.BOLD, 14));
         gastosLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gastosValueLabel = new JLabel("0 €"); // Inicialización de gastosValueLabel
+        gastosValueLabel = new JLabel("0 €");
         gastosValueLabel.setFont(new Font("Arial", Font.BOLD, 14));
         gastosValueLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gastosPanel.add(gastosLabel, BorderLayout.NORTH);
@@ -191,7 +189,7 @@ public class MainView extends JFrame {
         JLabel beneficioNetoLabel = new JLabel("Beneficio Neto");
         beneficioNetoLabel.setFont(new Font("Arial", Font.BOLD, 14));
         beneficioNetoLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        beneficioNetoValueLabel = new JLabel("0 €"); // Inicialización de beneficioNetoValueLabel
+        beneficioNetoValueLabel = new JLabel("0 €");
         beneficioNetoValueLabel.setFont(new Font("Arial", Font.BOLD, 14));
         beneficioNetoValueLabel.setHorizontalAlignment(SwingConstants.CENTER);
         beneficioNetoPanel.add(beneficioNetoLabel, BorderLayout.NORTH);
@@ -205,7 +203,7 @@ public class MainView extends JFrame {
         // Organizar todo
         datosFinancierosPanel.add(finanzasPanel, BorderLayout.CENTER);
 
-     // Tabla de Transferencias
+        // Tabla de Transferencias
         JPanel transaccionesPanel = new JPanel(new BorderLayout());
         transaccionesPanel.setBackground(new Color(192, 192, 192));
         transaccionesPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -370,8 +368,8 @@ public class MainView extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            // Aquí debes proporcionar el idUsuarioActual. Por ahora, usaremos un valor de ejemplo.
-            int idUsuarioActual = 1; // Este valor debería ser dinámico y venir de la sesión del usuario.
+
+            int idUsuarioActual = 1; // Cambiar para que funcione con todos los Usuarios
             MainView frame = new MainView(idUsuarioActual);
             frame.setVisible(true);
         });

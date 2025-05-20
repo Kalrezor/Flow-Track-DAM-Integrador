@@ -15,7 +15,6 @@ public class Gasto {
         this.fecha = fecha;
     }
 
-    // Getters y setters
     public int getIdUsuario() {
         return idUsuario;
     }

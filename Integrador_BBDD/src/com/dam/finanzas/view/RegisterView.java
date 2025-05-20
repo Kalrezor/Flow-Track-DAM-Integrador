@@ -14,7 +14,7 @@ public class RegisterView extends JFrame {
     private JPasswordField txtContraseña;
     private JPasswordField txtRepetirContraseña;
     private JButton btnCrearCuenta;
-    private JButton btnVolverLogin; // Botón para volver a la ventana de login
+    private JButton btnVolverLogin;
 
     public RegisterView() {
         setTitle("Crear Cuenta");
@@ -195,12 +195,10 @@ public class RegisterView extends JFrame {
         btnVolverLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Cerrar la ventana actual
                 dispose();
 
-                // Abrir la ventana de login
                 LoginView loginView = new LoginView();
-                AppControlador controller = new AppControlador(loginView, null); // Asegúrate de pasar el controlador adecuado
+                AppControlador controller = new AppControlador(loginView, null);
                 loginView.setController(controller);
                 loginView.setVisible(true);
             }
@@ -214,12 +212,11 @@ public class RegisterView extends JFrame {
 
         setContentPane(contentPane);
 
-        // Establecer un FocusTraversalPolicy personalizado para evitar el foco inicial
         setFocusTraversalPolicy(new CustomFocusTraversalPolicy());
     }
 
     public void setController(AppControlador controller) {
-        btnCrearCuenta.setActionCommand("Registrarse"); // Establece el actionCommand
+        btnCrearCuenta.setActionCommand("Registrarse");
         btnCrearCuenta.addActionListener(controller);
     }
 
@@ -239,31 +236,30 @@ public class RegisterView extends JFrame {
         return new String(txtRepetirContraseña.getPassword()).equals("Repetir Contraseña") ? "" : new String(txtRepetirContraseña.getPassword());
     }
 
-    // Clase personalizada para evitar el foco inicial
     private class CustomFocusTraversalPolicy extends FocusTraversalPolicy {
         @Override
         public Component getDefaultComponent(Container focusCycleRoot) {
-            return null; // No establecer foco en ningún componente al inicio
+            return null;
         }
 
         @Override
         public Component getFirstComponent(Container focusCycleRoot) {
-            return null; // No establecer foco en ningún componente al inicio
+            return null;
         }
 
         @Override
         public Component getLastComponent(Container focusCycleRoot) {
-            return null; // No establecer foco en ningún componente al inicio
+            return null;
         }
 
         @Override
         public Component getComponentAfter(Container focusCycleRoot, Component aComponent) {
-            return null; // No establecer foco en ningún componente al inicio
+            return null;
         }
 
         @Override
         public Component getComponentBefore(Container focusCycleRoot, Component aComponent) {
-            return null; // No establecer foco en ningún componente al inicio
+            return null;
         }
     }
 }
