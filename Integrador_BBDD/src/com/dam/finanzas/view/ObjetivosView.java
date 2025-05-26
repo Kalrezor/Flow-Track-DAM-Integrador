@@ -3,8 +3,10 @@ package com.dam.finanzas.view;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import com.dam.finanzas.model.ObjetivoFinanciero;
+import com.dam.finanzas.model.bbdd.TablaObjetivoFinanciero;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
@@ -15,18 +17,25 @@ public class ObjetivosView {
     private DefaultTableModel tableModel;
     private JTable table;
     private int idUsuarioActual;
+    private TablaObjetivoFinanciero tablaObjetivoFinanciero;
 
-    public ObjetivosView() {
-    	this.idUsuarioActual = idUsuarioActual;
+    public ObjetivosView(int idUsuarioActual) {
+        this.idUsuarioActual = idUsuarioActual;
+        this.tablaObjetivoFinanciero = new TablaObjetivoFinanciero();
         objetivosList = new ArrayList<>();
         initializeTableModel();
+        cargarObjetivos();
     }
-    
+
     private void initializeTableModel() {
-    	String[] columnNames = {"Descripción", "Costo Total", "Ahorro Mensual Disponible", "Meses Necesarios", "Estado"};
+        String[] columnNames = {"Descripción", "Costo Total", "Ahorro Mensual Sugerido", "Meses Necesarios", "Estado"};
         tableModel = new DefaultTableModel(columnNames, 0);
         table = new JTable(tableModel);
-        
+    }
+
+    private void cargarObjetivos() {
+        objetivosList = tablaObjetivoFinanciero.obtenerObjetivosPorUsuario(idUsuarioActual);
+        updateTable();
     }
 
     public JPanel createObjetivosPanel() {
@@ -40,7 +49,7 @@ public class ObjetivosView {
         panel.add(titleLabel, BorderLayout.NORTH);
 
         // Panel para ingresar datos de objetivos
-        JPanel inputPanel = new JPanel(new GridLayout(5, 2, 10, 10));
+        JPanel inputPanel = new JPanel(new GridLayout(6, 2, 10, 10));
         inputPanel.setBackground(Color.LIGHT_GRAY);
         inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -93,26 +102,26 @@ public class ObjetivosView {
             }
         });
 
-        JTextField gananciasMensualesField = new JTextField("Ganancias Mensuales (€)", 20);
-        gananciasMensualesField.setForeground(Color.GRAY);
-        gananciasMensualesField.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        inputPanel.add(new JLabel("Ganancias Mensuales (€):"));
-        inputPanel.add(gananciasMensualesField);
+        JTextField ingresosMensualesField = new JTextField("Ingresos Mensuales (€)", 20);
+        ingresosMensualesField.setForeground(Color.GRAY);
+        ingresosMensualesField.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        inputPanel.add(new JLabel("Ingresos Mensuales (€):"));
+        inputPanel.add(ingresosMensualesField);
 
-        gananciasMensualesField.addFocusListener(new FocusListener() {
+        ingresosMensualesField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (gananciasMensualesField.getText().equals("Ganancias Mensuales (€)")) {
-                    gananciasMensualesField.setText("");
-                    gananciasMensualesField.setForeground(Color.BLACK);
+                if (ingresosMensualesField.getText().equals("Ingresos Mensuales (€)")) {
+                    ingresosMensualesField.setText("");
+                    ingresosMensualesField.setForeground(Color.BLACK);
                 }
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (gananciasMensualesField.getText().isEmpty()) {
-                    gananciasMensualesField.setText("Ganancias Mensuales (€)");
-                    gananciasMensualesField.setForeground(Color.GRAY);
+                if (ingresosMensualesField.getText().isEmpty()) {
+                    ingresosMensualesField.setText("Ingresos Mensuales (€)");
+                    ingresosMensualesField.setForeground(Color.GRAY);
                 }
             }
         });
@@ -141,6 +150,30 @@ public class ObjetivosView {
             }
         });
 
+        JTextField ahorroMensualDeseadoField = new JTextField("Ahorro Mensual Deseado (€)", 20);
+        ahorroMensualDeseadoField.setForeground(Color.GRAY);
+        ahorroMensualDeseadoField.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        inputPanel.add(new JLabel("Ahorro Mensual Deseado (€):"));
+        inputPanel.add(ahorroMensualDeseadoField);
+
+        ahorroMensualDeseadoField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (ahorroMensualDeseadoField.getText().equals("Ahorro Mensual Deseado (€)")) {
+                    ahorroMensualDeseadoField.setText("");
+                    ahorroMensualDeseadoField.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (ahorroMensualDeseadoField.getText().isEmpty()) {
+                    ahorroMensualDeseadoField.setText("Ahorro Mensual Deseado (€)");
+                    ahorroMensualDeseadoField.setForeground(Color.GRAY);
+                }
+            }
+        });
+
         // Botón para agregar objetivo
         JButton addButton = new JButton("Agregar Objetivo");
         addButton.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -148,63 +181,64 @@ public class ObjetivosView {
         addButton.setForeground(Color.WHITE);
         inputPanel.add(addButton);
 
-        addButton.addActionListener((ActionEvent e) -> {
-            try {
-                String descripcion = descripcionField.getText();
-                double costo = Double.parseDouble(costoField.getText());
-                double gananciasMensuales = Double.parseDouble(gananciasMensualesField.getText());
-                double gastosMensuales = Double.parseDouble(gastosMensualesField.getText());
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String descripcion = descripcionField.getText();
+                    double costo = Double.parseDouble(costoField.getText());
+                    double ingresosMensuales = Double.parseDouble(ingresosMensualesField.getText());
+                    double gastosMensuales = Double.parseDouble(gastosMensualesField.getText());
+                    double ahorroMensualDeseado = Double.parseDouble(ahorroMensualDeseadoField.getText());
 
-                if (gananciasMensuales <= 0 || gastosMensuales < 0) {
-                    JOptionPane.showMessageDialog(panel, "Las ganancias deben ser mayores que cero y los gastos no pueden ser negativos.", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
+                    if (ingresosMensuales <= 0 || gastosMensuales < 0) {
+                        JOptionPane.showMessageDialog(panel, "Los ingresos deben ser mayores que cero y los gastos no pueden ser negativos.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    // Calcular el ahorro mensual disponible
+                    double ahorroMensualDisponible = ingresosMensuales - gastosMensuales;
+
+                    if (ahorroMensualDeseado > ahorroMensualDisponible) {
+                        JOptionPane.showMessageDialog(panel, "El ahorro mensual deseado excede el margen disponible.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    int mesesNecesarios = (int) Math.ceil(costo / ahorroMensualDeseado);
+
+                    ObjetivoFinanciero nuevoObjetivo = new ObjetivoFinanciero(
+                        0,
+                        idUsuarioActual,
+                        descripcion,
+                        costo,
+                        ahorroMensualDeseado,
+                        "2023-12-31",
+                        "En progreso"
+                    );
+
+                    tablaObjetivoFinanciero.registrarObjetivoFinanciero(nuevoObjetivo);
+                    cargarObjetivos();
+
+                    JOptionPane.showMessageDialog(
+                        panel,
+                        String.format("Con tus finanzas actuales, tardarás aproximadamente %d meses en cumplir este objetivo.", mesesNecesarios),
+                        "Tiempo Estimado",
+                        JOptionPane.INFORMATION_MESSAGE
+                    );
+
+                    descripcionField.setText("");
+                    costoField.setText("");
+                    ingresosMensualesField.setText("");
+                    gastosMensualesField.setText("");
+                    ahorroMensualDeseadoField.setText("");
+
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(panel, "Por favor, ingresa valores válidos.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-
-                // Calcular el ahorro mensual disponible
-                double ahorroMensualDisponible = gananciasMensuales - gastosMensuales;
-
-                if (ahorroMensualDisponible <= 0) {
-                    JOptionPane.showMessageDialog(panel, "No tienes ahorro mensual disponible para alcanzar este objetivo.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-
-                int mesesNecesarios = (int) Math.ceil(costo / ahorroMensualDisponible);
-
-                ObjetivoFinanciero nuevoObjetivo = new ObjetivoFinanciero(
-                    0,
-                    1,
-                    descripcion,
-                    costo,
-                    ahorroMensualDisponible,
-                    "2023-12-31",
-                    "En progreso"
-                );
-                objetivosList.add(nuevoObjetivo);
-
-                updateTable();
-
-                JOptionPane.showMessageDialog(
-                    panel,
-                    String.format("Con tus finanzas actuales, tardarás aproximadamente %d meses en cumplir este objetivo.", mesesNecesarios),
-                    "Tiempo Estimado",
-                    JOptionPane.INFORMATION_MESSAGE
-                );
-
-                descripcionField.setText("");
-                costoField.setText("");
-                gananciasMensualesField.setText("");
-                gastosMensualesField.setText("");
-
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(panel, "Por favor, ingresa valores válidos.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
         // Tabla de objetivos
-        String[] columnNames = {"Descripción", "Costo Total", "Ahorro Mensual", "Fecha Meta", "Estado"};
-        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
-        JTable table = new JTable(tableModel);
-        table.getTableHeader().setReorderingAllowed(false); // Desactivar la capacidad de reordenar las columnas
         JScrollPane scrollPane = new JScrollPane(table);
 
         // Botón para marcar un objetivo como completado
@@ -212,16 +246,20 @@ public class ObjetivosView {
         completeButton.setFont(new Font("Tahoma", Font.PLAIN, 15));
         completeButton.setBackground(new Color(44, 62, 80));
         completeButton.setForeground(Color.WHITE);
-        completeButton.addActionListener((ActionEvent e) -> {
-            int selectedRow = table.getSelectedRow();
-            if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(panel, "Selecciona un objetivo para marcar como cumplido.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+        completeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(panel, "Selecciona un objetivo para marcar como cumplido.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
-            ObjetivoFinanciero objetivo = objetivosList.get(selectedRow);
-            objetivo.setEstado("Cumplido");
-            updateTable();
+                ObjetivoFinanciero objetivo = objetivosList.get(selectedRow);
+                objetivo.setEstado("Cumplido");
+                tablaObjetivoFinanciero.actualizarObjetivoFinanciero(objetivo);
+                cargarObjetivos();
+            }
         });
 
         // Organizar todo
@@ -235,32 +273,14 @@ public class ObjetivosView {
         return panel;
     }
 
-    /*private void updateTable() {
-        // Implementa este método para actualizar la tabla con los datos de objetivosList
+    private void updateTable() {
         tableModel.setRowCount(0);
         for (ObjetivoFinanciero objetivo : objetivosList) {
             Object[] rowData = {
                 objetivo.getDescripcion(),
                 String.format("%.2f €", objetivo.getCosto()),
-                String.format("%.2f €", objetivo.getAhorroMensual()),
-                objetivo.getFechaMeta(),
-                objetivo.getEstado()
-            };
-            tableModel.addRow(rowData);
-        }
-    }*/
-
-
-    private void updateTable() {
-        tableModel.setRowCount(0);
-        for (int i = 0; i < objetivosList.size(); i++) {
-            ObjetivoFinanciero objetivo = objetivosList.get(i);
-            Object[] rowData = {
-                i + 1,
-                objetivo.getDescripcion(),
-                String.format("%.2f €", objetivo.getCosto()),
                 String.format("%.2f €", objetivo.getAhorroMensualSugerido()),
-                //objetivo.getMesesNecesarios(),
+                objetivo.getFechaMeta(),
                 objetivo.getEstado()
             };
             tableModel.addRow(rowData);
