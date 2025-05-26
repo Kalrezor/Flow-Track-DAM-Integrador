@@ -7,7 +7,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 public class LoginView extends JFrame {
-    private JTextField txtUsuario;
+    private JTextField txtCorreo;
     private JPasswordField txtContraseña;
     private JButton btnIniciarSesion;
     private JButton btnCrearCuenta;
@@ -43,31 +43,31 @@ public class LoginView extends JFrame {
         gbcIconoUsuario.insets = new Insets(10, 10, 10, 10);
         loginPanel.add(lblIconoUsuario, gbcIconoUsuario);
 
-        txtUsuario = new JTextField("Usuario", 20);
-        txtUsuario.setForeground(Color.GRAY);
-        txtUsuario.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        GridBagConstraints gbcUsuario = new GridBagConstraints();
-        gbcUsuario.gridx = 0;
-        gbcUsuario.gridy = 1;
-        gbcUsuario.gridwidth = 2;
-        gbcUsuario.fill = GridBagConstraints.HORIZONTAL;
-        gbcUsuario.insets = new Insets(10, 10, 10, 10);
-        loginPanel.add(txtUsuario, gbcUsuario);
+        txtCorreo = new JTextField("Correo", 20);
+        txtCorreo.setForeground(Color.GRAY);
+        txtCorreo.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        GridBagConstraints gbcCorreo = new GridBagConstraints();
+        gbcCorreo.gridx = 0;
+        gbcCorreo.gridy = 1;
+        gbcCorreo.gridwidth = 2;
+        gbcCorreo.fill = GridBagConstraints.HORIZONTAL;
+        gbcCorreo.insets = new Insets(10, 10, 10, 10);
+        loginPanel.add(txtCorreo, gbcCorreo);
 
-        txtUsuario.addFocusListener(new FocusListener() {
+        txtCorreo.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (txtUsuario.getText().equals("Usuario")) {
-                    txtUsuario.setText("");
-                    txtUsuario.setForeground(Color.BLACK);
+                if (txtCorreo.getText().equals("Correo")) {
+                    txtCorreo.setText("");
+                    txtCorreo.setForeground(Color.BLACK);
                 }
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (txtUsuario.getText().isEmpty()) {
-                    txtUsuario.setText("Usuario");
-                    txtUsuario.setForeground(Color.GRAY);
+                if (txtCorreo.getText().isEmpty()) {
+                    txtCorreo.setText("Correo");
+                    txtCorreo.setForeground(Color.GRAY);
                 }
             }
         });
@@ -78,7 +78,7 @@ public class LoginView extends JFrame {
         txtContraseña.setFont(new Font("Tahoma", Font.PLAIN, 14));
         GridBagConstraints gbcContraseña = new GridBagConstraints();
         gbcContraseña.gridx = 0;
-        gbcContraseña.gridy = 3;
+        gbcContraseña.gridy = 2;
         gbcContraseña.gridwidth = 2;
         gbcContraseña.fill = GridBagConstraints.HORIZONTAL;
         gbcContraseña.insets = new Insets(10, 10, 10, 10);
@@ -110,7 +110,7 @@ public class LoginView extends JFrame {
         btnIniciarSesion.setForeground(Color.WHITE);
         GridBagConstraints gbcIniciarSesion = new GridBagConstraints();
         gbcIniciarSesion.gridx = 0;
-        gbcIniciarSesion.gridy = 4;
+        gbcIniciarSesion.gridy = 3;
         gbcIniciarSesion.anchor = GridBagConstraints.CENTER;
         gbcIniciarSesion.insets = new Insets(10, 10, 10, 10);
         loginPanel.add(btnIniciarSesion, gbcIniciarSesion);
@@ -121,7 +121,7 @@ public class LoginView extends JFrame {
         btnCrearCuenta.setForeground(Color.WHITE);
         GridBagConstraints gbcCrearCuenta = new GridBagConstraints();
         gbcCrearCuenta.gridx = 1;
-        gbcCrearCuenta.gridy = 4;
+        gbcCrearCuenta.gridy = 3;
         gbcCrearCuenta.anchor = GridBagConstraints.CENTER;
         gbcCrearCuenta.insets = new Insets(10, 10, 10, 10);
         loginPanel.add(btnCrearCuenta, gbcCrearCuenta);
@@ -142,19 +142,15 @@ public class LoginView extends JFrame {
         btnCrearCuenta.addActionListener(controller);
     }
 
-    public String getUsuario() {
-        return txtUsuario.getText().equals("Usuario") ? "" : txtUsuario.getText();
-    }
-
     public String getCorreo() {
-        return txtUsuario.getText().equals("Usuario") ? "" : txtUsuario.getText();
+        return txtCorreo.getText().equals("Correo") ? "" : txtCorreo.getText();
     }
 
     public String getContrasena() {
         return new String(txtContraseña.getPassword()).equals("Contraseña") ? "" : new String(txtContraseña.getPassword());
     }
-    
- 	// Clase personalizada para evitar el foco inicial
+
+    // Clase personalizada para evitar el foco inicial
     private class CustomFocusTraversalPolicy extends FocusTraversalPolicy {
         @Override
         public Component getDefaultComponent(Container focusCycleRoot) {
@@ -182,3 +178,4 @@ public class LoginView extends JFrame {
         }
     }
 }
+

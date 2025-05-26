@@ -147,7 +147,7 @@ public class MainView extends JFrame {
 
         // Mes actual
         LocalDate fechaActual = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM");
         String mesActual = fechaActual.format(formatter);
 
         JLabel mesActualLabel = new JLabel(mesActual);

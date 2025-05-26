@@ -183,7 +183,6 @@ public class DeudasView {
             }
         });
 
-        // Organizar todo
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.add(editButton, BorderLayout.NORTH);
         bottomPanel.add(scrollPane, BorderLayout.CENTER);

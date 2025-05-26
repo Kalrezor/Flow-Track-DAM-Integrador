@@ -29,15 +29,21 @@ public class AppControlador implements java.awt.event.ActionListener {
             String correo = vlog.getCorreo();
             String contrasena = vlog.getContrasena();
 
-            Usuario usuario = datos.comprobarExiste(correo);
+            System.out.println("Correo: " + correo);
+            System.out.println("Contraseña: " + contrasena);
 
-            if (usuario != null && usuario.getContrasena().equals(contrasena)) {
-                SesionUsuario.getInstancia().setIdUsuarioActual(usuario.getIdUsuario());
-                SesionUsuario.getInstancia().setNombreUsuario(usuario.getNombre());
+            if (datos.autenticarUsuario(correo, contrasena)) {
+                Usuario usuario = datos.obtenerUsuarioPorCorreo(correo);
+                if (usuario != null) {
+                    SesionUsuario.getInstancia().setIdUsuarioActual(usuario.getIdUsuario());
+                    SesionUsuario.getInstancia().setNombreUsuario(usuario.getNombre());
 
-                MainView vp = new MainView(usuario.getIdUsuario());
-                vp.setVisible(true);
-                vlog.dispose();
+                    MainView vp = new MainView(usuario.getIdUsuario());
+                    vp.setVisible(true);
+                    vlog.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(vlog, "Usuario no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             } else {
                 JOptionPane.showMessageDialog(vlog, "Credenciales incorrectas", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -76,4 +82,5 @@ public class AppControlador implements java.awt.event.ActionListener {
             }
         }
     }
+
 }
