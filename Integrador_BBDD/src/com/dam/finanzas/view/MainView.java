@@ -73,7 +73,6 @@ public class MainView extends JFrame {
         sidebar.setBackground(new Color(44, 62, 80));
         sidebar.setPreferredSize(new Dimension(150, 600));
 
-        // Panel de relleno en la parte superior para el margen
         JPanel paddingPanel = new JPanel();
         paddingPanel.setOpaque(false);
         GridBagConstraints gbcPadding = new GridBagConstraints();
@@ -81,7 +80,6 @@ public class MainView extends JFrame {
         gbcPadding.weighty = 0.1; // Ajusta este valor para cambiar el margen superior
         sidebar.add(paddingPanel, gbcPadding);
 
-        // Botón Inicio
         JButton btnInicio = new JButton("Inicio");
         configureButton(btnInicio);
         GridBagConstraints gbcInicio = new GridBagConstraints();
@@ -218,18 +216,15 @@ public class MainView extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.LIGHT_GRAY);
 
-        // Encabezado: Bienvenida al usuario
         JLabel welcomeLabel = new JLabel("¡Bienvenid@ " + SesionUsuario.getInstancia().getNombreUsuario() + "!");
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 18));
         welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(welcomeLabel, BorderLayout.NORTH);
 
-        // Panel para los datos financieros
         JPanel datosFinancierosPanel = new JPanel(new BorderLayout());
         datosFinancierosPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         datosFinancierosPanel.setBackground(Color.LIGHT_GRAY);
 
-        // Mes actual
         LocalDate fechaActual = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM");
         String mesActual = fechaActual.format(formatter);
@@ -239,11 +234,9 @@ public class MainView extends JFrame {
         mesActualLabel.setHorizontalAlignment(SwingConstants.CENTER);
         datosFinancierosPanel.add(mesActualLabel, BorderLayout.NORTH);
 
-        // Recuadro para Ingresos, Gastos y Beneficio Neto
         JPanel finanzasPanel = new JPanel(new GridLayout(1, 3, 10, 0));
         finanzasPanel.setBackground(new Color(192, 192, 192));
 
-        // Recuadro para Ingresos
         JPanel ingresosPanel = new JPanel(new BorderLayout());
         ingresosPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         JLabel ingresosLabel = new JLabel("Ingresos");
@@ -255,7 +248,6 @@ public class MainView extends JFrame {
         ingresosPanel.add(ingresosLabel, BorderLayout.NORTH);
         ingresosPanel.add(ingresosValueLabel, BorderLayout.CENTER);
 
-        // Recuadro para Gastos
         JPanel gastosPanel = new JPanel(new BorderLayout());
         gastosPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         JLabel gastosLabel = new JLabel("Gastos");
@@ -267,7 +259,6 @@ public class MainView extends JFrame {
         gastosPanel.add(gastosLabel, BorderLayout.NORTH);
         gastosPanel.add(gastosValueLabel, BorderLayout.CENTER);
 
-        // Recuadro para Beneficio Neto
         JPanel beneficioNetoPanel = new JPanel(new BorderLayout());
         beneficioNetoPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         JLabel beneficioNetoLabel = new JLabel("Beneficio Neto");
@@ -279,15 +270,13 @@ public class MainView extends JFrame {
         beneficioNetoPanel.add(beneficioNetoLabel, BorderLayout.NORTH);
         beneficioNetoPanel.add(beneficioNetoValueLabel, BorderLayout.CENTER);
 
-        // Añadir recuadros al panel de datos financieros
         finanzasPanel.add(ingresosPanel);
         finanzasPanel.add(gastosPanel);
         finanzasPanel.add(beneficioNetoPanel);
 
-        // Organizar todo
         datosFinancierosPanel.add(finanzasPanel, BorderLayout.CENTER);
 
-        // Tabla de Transferencias
+     // Tabla de Transferencias
         JPanel transaccionesPanel = new JPanel(new BorderLayout());
         transaccionesPanel.setBackground(new Color(192, 192, 192));
         transaccionesPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -306,18 +295,16 @@ public class MainView extends JFrame {
         Object[][] dataTransferencias = tablaTransferencia.obtenerTransferencias(idUsuarioActual);
 
         // Nombres de las columnas
-        String[] columnNamesTransferencias = {"Remitente", "Destinatario", "Cantidad"};
+        String[] columnNamesTransferencias = {"Remitente", "Destinatario", "Monto"};
 
         // Crear la tabla de transferencias
         JTable transferenciasTable = new JTable(dataTransferencias, columnNamesTransferencias);
         JScrollPane scrollPane = new JScrollPane(transferenciasTable);
         transaccionesPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Panel derecho
         JPanel rightPanel = new JPanel(new BorderLayout());
         rightPanel.setBackground(Color.LIGHT_GRAY);
 
-        // Encabezado del panel derecho
         JPanel rightHeader = new JPanel(new BorderLayout());
         rightHeader.setBackground(Color.LIGHT_GRAY);
         JLabel userIcon = new JLabel("👤");
@@ -328,11 +315,9 @@ public class MainView extends JFrame {
         rightHeader.add(userNameLabel, BorderLayout.CENTER);
         rightPanel.add(rightHeader, BorderLayout.NORTH);
 
-        // Panel para la lista de gastos
         JPanel gastosListPanel = new JPanel(new GridLayout(0, 1, 0, 1));
         gastosListPanel.setBackground(Color.LIGHT_GRAY);
 
-        // Título "Tipos de Gastos:"
         JLabel tiposGastosLabel = new JLabel("Tipos de Gastos:");
         tiposGastosLabel.setFont(new Font("Arial", Font.BOLD, 16));
         tiposGastosLabel.setHorizontalAlignment(SwingConstants.LEFT);

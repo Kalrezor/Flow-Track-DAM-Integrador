@@ -292,27 +292,35 @@ public class TransaccionesView {
         asuntoField.addFocusListener(new PlaceholderFocusListener(asuntoField, "Asunto"));
         cantidadField.addFocusListener(new PlaceholderFocusListener(cantidadField, "Cantidad"));
 
-        // Acción del botón
         registrarButton.addActionListener(e -> {
             String opcion = (String) tipoTransferenciaComboBox.getSelectedItem();
             if (opcion == null || opcion.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Seleccione un tipo de transferencia", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            String destinatario = destinatarioField.getText();
+            String nombreDestinatarioRemitente = destinatarioField.getText();
             String asunto = asuntoField.getText();
             try {
                 double cantidad = Double.parseDouble(cantidadField.getText());
 
                 if (cantidad > 0) {
-                    Transferencia transferencia = new Transferencia(idUsuarioActual, 1, cantidad, asunto); // Asumiendo que el ID de destino es 1
+                    int idDestino = 1; // Asumiendo que el ID de destino es 1
+                    if ("Enviar Dinero".equals(opcion)) {
+                        // Si el usuario está enviando dinero, el destinatario es el ID de destino
+                        idDestino = obtenerIdUsuarioPorNombre(nombreDestinatarioRemitente);
+                    } else if ("Recibir Dinero".equals(opcion)) {
+                        // Si el usuario está recibiendo dinero, el remitente es el ID de destino
+                        idDestino = obtenerIdUsuarioPorNombre(nombreDestinatarioRemitente);
+                    }
+
+                    Transferencia transferencia = new Transferencia(idUsuarioActual, idDestino, cantidad, asunto);
                     TablaTransferencia tablaTransferencia = new TablaTransferencia();
                     int resultado = tablaTransferencia.registrarTransferencia(transferencia);
 
                     if (resultado > 0) {
                         String mensaje = opcion.equals("Enviar Dinero")
-                                ? "Dinero enviado: " + cantidad + "€ a " + destinatario + " por " + asunto
-                                : "Dinero recibido: " + cantidad + "€ de " + destinatario + " por " + asunto;
+                                ? "Dinero enviado: " + cantidad + "€ a " + nombreDestinatarioRemitente + " por " + asunto
+                                : "Dinero recibido: " + cantidad + "€ de " + nombreDestinatarioRemitente + " por " + asunto;
                         JOptionPane.showMessageDialog(null, mensaje, "Éxito", JOptionPane.INFORMATION_MESSAGE);
                         destinatarioField.setText("");
                         asuntoField.setText("");
@@ -348,6 +356,12 @@ public class TransaccionesView {
         panel.add(registrarButton);
 
         return panel;
+    }
+
+    private int obtenerIdUsuarioPorNombre(String nombre) {
+        // Implementa la lógica para obtener el ID de usuario por nombre
+        // Esto es solo un ejemplo, debes ajustarlo según tu base de datos
+        return 1; // Valor de ejemplo
     }
 
     private static class PlaceholderFocusListener implements FocusListener {

@@ -81,10 +81,14 @@ public class TablaTransferencia {
                 double monto = rs.getDouble("monto");
                 String descripcion = rs.getString("descripcion");
 
-                String remitente = obtenerNombreUsuario(idOrigen);
-                String destinatario = obtenerNombreUsuario(idDestino);
+                String remitente = obtenerNombreUsuario(idOrigen, "Usuario Desconocido");
+                String destinatario = obtenerNombreUsuario(idDestino, "Usuario Desconocido");
 
-                transferencias.add(new Object[]{remitente, destinatario, monto});
+                // Determinar si el usuario es el remitente o el destinatario
+                String usuarioRemitente = (idOrigen == idUsuario) ? "Tú" : remitente;
+                String usuarioDestinatario = (idDestino == idUsuario) ? "Tú" : destinatario;
+
+                transferencias.add(new Object[]{usuarioRemitente, usuarioDestinatario, monto});
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -112,8 +116,8 @@ public class TablaTransferencia {
         return data;
     }
 
-    private String obtenerNombreUsuario(int idUsuario) {
-        String nombreUsuario = "Usuario Desconocido";
+    private String obtenerNombreUsuario(int idUsuario, String nombrePorDefecto) {
+        String nombreUsuario = nombrePorDefecto; // Usar el nombre proporcionado por defecto
         String query = "SELECT nombre FROM Usuario WHERE id_usuario = ?";
 
         Connection con = null;
@@ -149,4 +153,5 @@ public class TablaTransferencia {
 
         return nombreUsuario;
     }
+
 }
