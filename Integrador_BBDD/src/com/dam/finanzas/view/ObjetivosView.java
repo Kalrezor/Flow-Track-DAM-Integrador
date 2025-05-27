@@ -42,18 +42,15 @@ public class ObjetivosView {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.LIGHT_GRAY);
 
-        // Encabezado de la pantalla
         JLabel titleLabel = new JLabel("Gestión de Objetivos Financieros");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(titleLabel, BorderLayout.NORTH);
 
-        // Panel para ingresar datos de objetivos
         JPanel inputPanel = new JPanel(new GridLayout(6, 2, 10, 10));
         inputPanel.setBackground(Color.LIGHT_GRAY);
         inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Campos de entrada
         JTextField descripcionField = new JTextField("Descripción", 20);
         descripcionField.setForeground(Color.GRAY);
         descripcionField.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -174,7 +171,6 @@ public class ObjetivosView {
             }
         });
 
-        // Botón para agregar objetivo
         JButton addButton = new JButton("Agregar Objetivo");
         addButton.setFont(new Font("Tahoma", Font.PLAIN, 15));
         addButton.setBackground(new Color(44, 62, 80));
@@ -196,7 +192,6 @@ public class ObjetivosView {
                         return;
                     }
 
-                    // Calcular el ahorro mensual disponible
                     double ahorroMensualDisponible = ingresosMensuales - gastosMensuales;
 
                     if (ahorroMensualDeseado > ahorroMensualDisponible) {
@@ -238,10 +233,8 @@ public class ObjetivosView {
             }
         });
 
-        // Tabla de objetivos
         JScrollPane scrollPane = new JScrollPane(table);
 
-        // Botón para marcar un objetivo como completado
         JButton completeButton = new JButton("Marcar como Cumplido");
         completeButton.setFont(new Font("Tahoma", Font.PLAIN, 15));
         completeButton.setBackground(new Color(44, 62, 80));
@@ -262,7 +255,6 @@ public class ObjetivosView {
             }
         });
 
-        // Organizar todo
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.add(completeButton, BorderLayout.NORTH);
         bottomPanel.add(scrollPane, BorderLayout.CENTER);

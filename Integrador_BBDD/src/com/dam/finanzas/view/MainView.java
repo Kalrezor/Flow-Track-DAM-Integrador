@@ -2,6 +2,8 @@ package com.dam.finanzas.view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -34,108 +36,190 @@ public class MainView extends JFrame {
     private void initComponents() {
         getContentPane().setLayout(new BorderLayout());
 
-        // Barra lateral
         sidebar = createSidebar();
         getContentPane().add(sidebar, BorderLayout.WEST);
 
-        // Contenedor principal con CardLayout
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
         contentPanel.setBackground(Color.LIGHT_GRAY);
 
-        // Pantalla inicial (HOME)
         JPanel homePanel = createHomePanel();
         contentPanel.add(homePanel, "HOME");
 
-        // Pantalla de Transacciones
         TransaccionesView transaccionesView = new TransaccionesView(gastosMap, idUsuarioActual);
         JPanel transaccionesPanel = transaccionesView.createTransaccionesPanel();
         contentPanel.add(transaccionesPanel, "TRANSACCIONES");
 
-        // Pantalla de Deudas
         DeudasView deudasView = new DeudasView(idUsuarioActual);
         JPanel deudasPanel = deudasView.createDeudasPanel();
         contentPanel.add(deudasPanel, "DEUDAS");
 
-        // Pantalla de Objetivos
         ObjetivosView objetivosView = new ObjetivosView(idUsuarioActual);
         JPanel objetivosPanel = objetivosView.createObjetivosPanel();
         contentPanel.add(objetivosPanel, "OBJETIVOS");
 
+        EstadisticasView estadisticasView = new EstadisticasView(idUsuarioActual);
+        JPanel estadisticasPanel = estadisticasView.createEstadisticasPanel();
+        contentPanel.add(estadisticasPanel, "ESTADISTICAS");
+        
         getContentPane().add(contentPanel, BorderLayout.CENTER);
 
         actualizarTotales();
     }
-
+    
     private JPanel createSidebar() {
-        JPanel sidebar = new JPanel();
-        sidebar.setLayout(new GridLayout(8, 1));
+        JPanel sidebar = new JPanel(new GridBagLayout());
         sidebar.setOpaque(true);
         sidebar.setBackground(new Color(44, 62, 80));
         sidebar.setPreferredSize(new Dimension(150, 600));
 
-        String[] botones = {
-            "Inicio",
-            "Transacciones",
-            "Deudas",
-            "Objetivos",
-            "Estadísticas",
-            "Usuario",
-            "Salir"
-        };
+        // Panel de relleno en la parte superior para el margen
+        JPanel paddingPanel = new JPanel();
+        paddingPanel.setOpaque(false);
+        GridBagConstraints gbcPadding = new GridBagConstraints();
+        gbcPadding.gridy = 0;
+        gbcPadding.weighty = 0.1; // Ajusta este valor para cambiar el margen superior
+        sidebar.add(paddingPanel, gbcPadding);
 
-        for (String texto : botones) {
-            JButton button = new JButton(texto);
-            button.setForeground(Color.WHITE);
-            button.setBackground(new Color(44, 62, 80));
-            button.setBorderPainted(false);
-            button.setFocusPainted(false);
-            button.setPreferredSize(new Dimension(140, 40));
+        // Botón Inicio
+        JButton btnInicio = new JButton("Inicio");
+        configureButton(btnInicio);
+        GridBagConstraints gbcInicio = new GridBagConstraints();
+        gbcInicio.fill = GridBagConstraints.BOTH;
+        gbcInicio.anchor = GridBagConstraints.NORTH;
+        gbcInicio.weightx = 1.0;
+        gbcInicio.weighty = 1.0;
+        gbcInicio.gridy = 1;
+        gbcInicio.insets = new Insets(5, 10, 5, 10);
+        sidebar.add(btnInicio, gbcInicio);
 
-            button.addActionListener(e -> {
-                switch (texto) {
-                    case "Inicio":
-                        cardLayout.show(contentPanel, "HOME");
-                        System.out.println("Inicio");
-                        break;
-                    case "Transacciones":
-                        cardLayout.show(contentPanel, "TRANSACCIONES");
-                        System.out.println("Transacciones");
-                        break;
-                    case "Deudas":
-                        cardLayout.show(contentPanel, "DEUDAS");
-                        System.out.println("Deudas");
-                        break;
-                    case "Objetivos":
-                        cardLayout.show(contentPanel, "OBJETIVOS");
-                        System.out.println("Objetivos");
-                        break;
-                    case "Estadísticas":
-                        cardLayout.show(contentPanel, "ESTADISTICAS");
-                        System.out.println("Estadísticas");
-                        break;
-                    case "Usuario":
-                        cardLayout.show(contentPanel, "USUARIO");
-                        System.out.println("Usuario");
-                        break;
-                    case "Salir":
-                        System.exit(0);
-                        break;
-                }
-            });
+        btnInicio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	cardLayout.show(contentPanel, "HOME");
+                System.out.println("Inicio");
+            }
+        });
 
-            sidebar.add(button);
+        // Botón Transacciones
+        JButton btnTransacciones = new JButton("Transacciones");
+        configureButton(btnTransacciones);
+        GridBagConstraints gbcTransacciones = new GridBagConstraints();
+        gbcTransacciones.fill = GridBagConstraints.BOTH;
+        gbcTransacciones.anchor = GridBagConstraints.NORTH;
+        gbcTransacciones.weightx = 1.0;
+        gbcTransacciones.weighty = 1.0;
+        gbcTransacciones.gridy = 2;
+        gbcTransacciones.insets = new Insets(5, 10, 5, 10);
+        sidebar.add(btnTransacciones, gbcTransacciones);
+
+        btnTransacciones.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	cardLayout.show(contentPanel, "TRANSACCIONES");
+                System.out.println("Transacciones");
+            }
+        });
+
+    // Botón Deudas
+    JButton btnDeudas = new JButton("Deudas");
+    configureButton(btnDeudas);
+    GridBagConstraints gbcDeudas = new GridBagConstraints();
+    gbcDeudas.fill = GridBagConstraints.BOTH;
+    gbcDeudas.anchor = GridBagConstraints.NORTH;
+    gbcDeudas.weightx = 1.0;
+    gbcDeudas.weighty = 1.0;
+    gbcDeudas.gridy = 3;
+    gbcDeudas.insets = new Insets(5, 10, 5, 10);
+    sidebar.add(btnDeudas, gbcDeudas);
+
+    btnDeudas.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            cardLayout.show(contentPanel, "DEUDAS");
+            System.out.println("Deudas");
         }
+    });
+    
+    // Botón Objetivos
+    JButton btnObjetivos = new JButton("Objetivos");
+    configureButton(btnObjetivos);
+    GridBagConstraints gbcObjetivos = new GridBagConstraints();
+    gbcObjetivos.fill = GridBagConstraints.BOTH;
+    gbcObjetivos.anchor = GridBagConstraints.NORTH;
+    gbcObjetivos.weightx = 1.0;
+    gbcObjetivos.weighty = 1.0;
+    gbcObjetivos.gridy = 4;
+    gbcObjetivos.insets = new Insets(5, 10, 5, 10);
+    sidebar.add(btnObjetivos, gbcObjetivos);
 
-        return sidebar;
+    btnObjetivos.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            cardLayout.show(contentPanel, "OBJETIVOS");
+            System.out.println("Objetivos");
+        }
+    });
+
+    
+    // Botón Estadísticas
+    JButton btnEstadisticas = new JButton("Estadísticas");
+    configureButton(btnEstadisticas);
+    GridBagConstraints gbcEstadisticas = new GridBagConstraints();
+    gbcEstadisticas.fill = GridBagConstraints.BOTH;
+    gbcEstadisticas.anchor = GridBagConstraints.NORTH;
+    gbcEstadisticas.weightx = 1.0;
+    gbcEstadisticas.weighty = 1.0;
+    gbcEstadisticas.gridy = 5;
+    gbcEstadisticas.insets = new Insets(5, 10, 5, 10);
+    sidebar.add(btnEstadisticas, gbcEstadisticas);
+
+    btnEstadisticas.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            cardLayout.show(contentPanel, "ESTADISTICAS");
+            System.out.println("Estadísticas");
+        }
+    });
+    
+    // Botón Salir
+    JButton btnSalir = new JButton("Salir");
+    configureButton(btnSalir);
+    GridBagConstraints gbcSalir = new GridBagConstraints();
+    gbcSalir.fill = GridBagConstraints.BOTH;
+    gbcSalir.anchor = GridBagConstraints.NORTH;
+    gbcSalir.weightx = 1.0;
+    gbcSalir.weighty = 1.0;
+    gbcSalir.gridy = 6;
+    gbcSalir.insets = new Insets(5, 10, 5, 10);
+    sidebar.add(btnSalir, gbcSalir);
+
+    btnSalir.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.exit(0);
+        }
+    });
+
+    return sidebar;
+}
+
+    private void configureButton(JButton button) {
+        button.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        button.setBackground(new Color(44, 62, 80)); // Fondo opaco
+        button.setForeground(Color.WHITE); // Texto en blanco
+        button.setOpaque(true);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        button.setPreferredSize(new Dimension(130, 130)); // Tamaño cuadrado
     }
-
+    
     private JPanel createHomePanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.LIGHT_GRAY);
 
         // Encabezado: Bienvenida al usuario
-        JLabel welcomeLabel = new JLabel("¡Bienvenido " + SesionUsuario.getInstancia().getNombreUsuario() + "!");
+        JLabel welcomeLabel = new JLabel("¡Bienvenid@ " + SesionUsuario.getInstancia().getNombreUsuario() + "!");
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 18));
         welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(welcomeLabel, BorderLayout.NORTH);

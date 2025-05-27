@@ -7,8 +7,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 import com.dam.finanzas.model.Deuda;
 import com.dam.finanzas.model.bbdd.TablaDeuda;
 
@@ -46,18 +50,15 @@ public class DeudasView {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.LIGHT_GRAY);
 
-        // Encabezado de la pantalla
         JLabel titleLabel = new JLabel("Gestión de Deudas");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(titleLabel, BorderLayout.NORTH);
 
-        // Panel para ingresar datos de deudas
         JPanel inputPanel = new JPanel(new GridLayout(5, 2, 10, 10));
         inputPanel.setBackground(Color.LIGHT_GRAY);
         inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Campos de entrada
         txtDescripcion = new JTextField("Descripción", 20);
         txtDescripcion.setForeground(Color.GRAY);
         txtDescripcion.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -130,7 +131,7 @@ public class DeudasView {
             }
         });
 
-        txtFechaVencimiento = new JTextField("Fecha Vencimiento", 20);
+        txtFechaVencimiento = new JTextField("Fecha Vencimiento (dd-MM-yyyy)", 20);
         txtFechaVencimiento.setForeground(Color.GRAY);
         txtFechaVencimiento.setFont(new Font("Tahoma", Font.PLAIN, 14));
         inputPanel.add(new JLabel("Fecha Vencimiento:"));
@@ -139,7 +140,7 @@ public class DeudasView {
         txtFechaVencimiento.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (txtFechaVencimiento.getText().equals("Fecha Vencimiento")) {
+                if (txtFechaVencimiento.getText().equals("Fecha Vencimiento (dd-MM-yyyy)")) {
                     txtFechaVencimiento.setText("");
                     txtFechaVencimiento.setForeground(Color.BLACK);
                 }
@@ -148,7 +149,7 @@ public class DeudasView {
             @Override
             public void focusLost(FocusEvent e) {
                 if (txtFechaVencimiento.getText().isEmpty()) {
-                    txtFechaVencimiento.setText("Fecha Vencimiento");
+                    txtFechaVencimiento.setText("Fecha Vencimiento (dd-MM-yyyy)");
                     txtFechaVencimiento.setForeground(Color.GRAY);
                 }
             }
@@ -169,12 +170,10 @@ public class DeudasView {
 
         panel.add(inputPanel, BorderLayout.NORTH);
 
-        /// Tabla de Deudas
         JScrollPane scrollPane = new JScrollPane(table);
         panel.add(scrollPane, BorderLayout.CENTER);
         table.getTableHeader().setReorderingAllowed(false);
 
-        // Botón para editar deuda
         JButton editButton = new JButton("Editar Deuda");
         editButton.addActionListener(new ActionListener() {
             @Override
@@ -203,6 +202,11 @@ public class DeudasView {
             return;
         }
 
+        if (!isValidDateFormat(fechaVencimiento)) {
+            JOptionPane.showMessageDialog(null, "La fecha de vencimiento debe estar en formato dd-MM-yyyy o dd/MM/yyyy.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         try {
             double montoTotal = Double.parseDouble(montoTotalStr);
             double montoPendiente = Double.parseDouble(montoPendienteStr);
@@ -223,6 +227,30 @@ public class DeudasView {
         }
     }
 
+    // revisar No estoy seguro
+    private boolean isValidDateFormat(String dateStr) {
+        String[] formats = { "dd-MM-yyyy", "dd/MM/yyyy", "dd-MMM-yyyy", "dd/MMM/yyyy" };
+
+        for (String format : formats) {
+            SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.ENGLISH);
+            sdf.setLenient(false);
+
+            try {
+
+            	if (format.contains("MMM")) {
+                    sdf.parse(dateStr.toUpperCase());
+                } else {
+                    sdf.parse(dateStr);
+                }
+                return true;
+            } catch (ParseException e) {
+
+            }
+        }
+
+        return false;
+    }
+
     private void limpiarCampos() {
         txtDescripcion.setText("Descripción");
         txtDescripcion.setForeground(Color.GRAY);
@@ -230,7 +258,7 @@ public class DeudasView {
         txtMontoTotal.setForeground(Color.GRAY);
         txtMontoPendiente.setText("Monto Pendiente");
         txtMontoPendiente.setForeground(Color.GRAY);
-        txtFechaVencimiento.setText("Fecha Vencimiento");
+        txtFechaVencimiento.setText("Fecha Vencimiento (dd-MM-yyyy)");
         txtFechaVencimiento.setForeground(Color.GRAY);
     }
 
@@ -272,11 +300,11 @@ public class DeudasView {
     }
 
     private void actualizarTablaDeudas() {
-    	tableModel.setRowCount(0);
+        tableModel.setRowCount(0);
         for (Deuda deuda : deudasList) {
             Object[] rowData = {
                 deuda.getDescripcion(),
-                String.format("%.2f €", deuda.getMontoTotal()),
+                String.format("%.2f €", deuda.getMontoTotal()), // "%.2f €" para decimales, 2 serian 2 decimales
                 String.format("%.2f €", deuda.getMontoPendiente()),
                 deuda.getFechaVencimiento(),
                 deuda.getEstado()
@@ -284,5 +312,4 @@ public class DeudasView {
             tableModel.addRow(rowData);
         }
     }
-
 }
