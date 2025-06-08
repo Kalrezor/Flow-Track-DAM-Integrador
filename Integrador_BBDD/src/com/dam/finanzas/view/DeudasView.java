@@ -55,7 +55,7 @@ public class DeudasView {
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(titleLabel, BorderLayout.NORTH);
 
-        JPanel inputPanel = new JPanel(new GridLayout(5, 2, 10, 10));
+        JPanel inputPanel = new JPanel(new GridLayout(6, 2, 10, 10)); // Cambiado a 6 filas para acomodar el nuevo botón
         inputPanel.setBackground(Color.LIGHT_GRAY);
         inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -168,13 +168,10 @@ public class DeudasView {
             }
         });
 
-        panel.add(inputPanel, BorderLayout.NORTH);
-
-        JScrollPane scrollPane = new JScrollPane(table);
-        panel.add(scrollPane, BorderLayout.CENTER);
-        table.getTableHeader().setReorderingAllowed(false);
-
         JButton editButton = new JButton("Editar Deuda");
+        editButton.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        editButton.setBackground(new Color(44, 62, 80)); // Mismo color de fondo que "Registrar Deuda"
+        editButton.setForeground(Color.WHITE); // Mismo color de texto que "Registrar Deuda"
         editButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -182,11 +179,13 @@ public class DeudasView {
             }
         });
 
-        JPanel bottomPanel = new JPanel(new BorderLayout());
-        bottomPanel.add(editButton, BorderLayout.NORTH);
-        bottomPanel.add(scrollPane, BorderLayout.CENTER);
+        inputPanel.add(editButton); // Añadir el botón "Editar Deuda" al panel de entrada
 
-        panel.add(bottomPanel, BorderLayout.CENTER);
+        panel.add(inputPanel, BorderLayout.NORTH);
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        panel.add(scrollPane, BorderLayout.CENTER);
+        table.getTableHeader().setReorderingAllowed(false);
 
         return panel;
     }
@@ -227,7 +226,6 @@ public class DeudasView {
         }
     }
 
-    // revisar No estoy seguro
     private boolean isValidDateFormat(String dateStr) {
         String[] formats = { "dd-MM-yyyy", "dd/MM/yyyy", "dd-MMM-yyyy", "dd/MMM/yyyy" };
 
@@ -236,15 +234,14 @@ public class DeudasView {
             sdf.setLenient(false);
 
             try {
-
-            	if (format.contains("MMM")) {
+                if (format.contains("MMM")) {
                     sdf.parse(dateStr.toUpperCase());
                 } else {
                     sdf.parse(dateStr);
                 }
                 return true;
             } catch (ParseException e) {
-
+                // Ignorar y probar con el siguiente formato
             }
         }
 
@@ -304,7 +301,7 @@ public class DeudasView {
         for (Deuda deuda : deudasList) {
             Object[] rowData = {
                 deuda.getDescripcion(),
-                String.format("%.2f €", deuda.getMontoTotal()), // "%.2f €" para decimales, 2 serian 2 decimales
+                String.format("%.2f €", deuda.getMontoTotal()),
                 String.format("%.2f €", deuda.getMontoPendiente()),
                 deuda.getFechaVencimiento(),
                 deuda.getEstado()
