@@ -19,9 +19,19 @@ public class MainView extends JFrame {
     private JPanel contentPanel;
     private Map<String, Double> gastosMap;
     private int idUsuarioActual;
+   
     private JLabel ingresosValueLabel;
     private JLabel gastosValueLabel;
     private JLabel beneficioNetoValueLabel;
+   
+    private JLabel ociodLabel;
+    private JLabel ropadLabel;
+    private JLabel tecnodLabel;
+    private JLabel saluddLabel;
+    private JLabel transpdLabel;
+    private JLabel comidadLabel;
+    private JLabel hogardLabel;
+    private JLabel educdLabel;
 
     public MainView(int idUsuarioActual) {
         this.idUsuarioActual = idUsuarioActual;
@@ -61,12 +71,12 @@ public class MainView extends JFrame {
         EstadisticasView estadisticasView = new EstadisticasView(idUsuarioActual);
         JPanel estadisticasPanel = estadisticasView.createEstadisticasPanel();
         contentPanel.add(estadisticasPanel, "ESTADISTICAS");
-        
+       
         getContentPane().add(contentPanel, BorderLayout.CENTER);
 
         actualizarTotales();
     }
-    
+   
     private JPanel createSidebar() {
         JPanel sidebar = new JPanel(new GridBagLayout());
         sidebar.setOpaque(true);
@@ -94,7 +104,7 @@ public class MainView extends JFrame {
         btnInicio.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	cardLayout.show(contentPanel, "HOME");
+            cardLayout.show(contentPanel, "HOME");
                 System.out.println("Inicio");
             }
         });
@@ -114,7 +124,7 @@ public class MainView extends JFrame {
         btnTransacciones.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	cardLayout.show(contentPanel, "TRANSACCIONES");
+            cardLayout.show(contentPanel, "TRANSACCIONES");
                 System.out.println("Transacciones");
             }
         });
@@ -138,7 +148,7 @@ public class MainView extends JFrame {
             System.out.println("Deudas");
         }
     });
-    
+   
     // Botón Objetivos
     JButton btnObjetivos = new JButton("Objetivos");
     configureButton(btnObjetivos);
@@ -159,7 +169,7 @@ public class MainView extends JFrame {
         }
     });
 
-    
+   
     // Botón Estadísticas
     JButton btnEstadisticas = new JButton("Estadísticas");
     configureButton(btnEstadisticas);
@@ -179,7 +189,7 @@ public class MainView extends JFrame {
             System.out.println("Estadísticas");
         }
     });
-    
+   
     // Botón Salir
     JButton btnSalir = new JButton("Salir");
     configureButton(btnSalir);
@@ -209,9 +219,9 @@ public class MainView extends JFrame {
         button.setOpaque(true);
         button.setBorderPainted(false);
         button.setFocusPainted(false);
-        button.setPreferredSize(new Dimension(130, 130)); // Tamaño cuadrado
+        button.setPreferredSize(new Dimension(130, 130)); // Tamaño cuadrado
     }
-    
+   
     private JPanel createHomePanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.LIGHT_GRAY);
@@ -328,7 +338,7 @@ public class MainView extends JFrame {
         ocioLabel.setHorizontalAlignment(SwingConstants.LEFT);
         gastosListPanel.add(ocioLabel);
 
-        JLabel ociodLabel = new JLabel("0" + " €");
+        ociodLabel = new JLabel("0 €");
         ociodLabel.setFont(new Font("Arial", Font.BOLD, 14));
         ociodLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gastosListPanel.add(ociodLabel);
@@ -337,72 +347,72 @@ public class MainView extends JFrame {
         ropaLabel.setFont(new Font("Arial", Font.BOLD, 14));
         ropaLabel.setHorizontalAlignment(SwingConstants.LEFT);
         gastosListPanel.add(ropaLabel);
-
-        JLabel ropadLabel = new JLabel("0" + " €");
+       
+        ropadLabel = new JLabel("0 €");
         ropadLabel.setFont(new Font("Arial", Font.BOLD, 14));
         ropadLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gastosListPanel.add(ropadLabel);
-
+       
         JLabel tecnoLabel = new JLabel("Tecnología y gadgets  ");
         tecnoLabel.setFont(new Font("Arial", Font.BOLD, 14));
         tecnoLabel.setHorizontalAlignment(SwingConstants.LEFT);
         gastosListPanel.add(tecnoLabel);
 
-        JLabel tecnodLabel = new JLabel("0" + " €");
+        tecnodLabel = new JLabel("0 €");
         tecnodLabel.setFont(new Font("Arial", Font.BOLD, 14));
         tecnodLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gastosListPanel.add(tecnodLabel);
-
+       
         JLabel saludLabel = new JLabel("Salud y cuidado personal  ");
         saludLabel.setFont(new Font("Arial", Font.BOLD, 14));
         saludLabel.setHorizontalAlignment(SwingConstants.LEFT);
         gastosListPanel.add(saludLabel);
 
-        JLabel saluddLabel = new JLabel("0" + " €");
+        saluddLabel = new JLabel("0 €");
         saluddLabel.setFont(new Font("Arial", Font.BOLD, 14));
         saluddLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gastosListPanel.add(saluddLabel);
-
+       
         JLabel transpLabel = new JLabel("Transporte y movilidad  ");
         transpLabel.setFont(new Font("Arial", Font.BOLD, 14));
         transpLabel.setHorizontalAlignment(SwingConstants.LEFT);
         gastosListPanel.add(transpLabel);
 
-        JLabel transpdLabel = new JLabel("0" + " €");
+        transpdLabel = new JLabel("0 €");
         transpdLabel.setFont(new Font("Arial", Font.BOLD, 14));
         transpdLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gastosListPanel.add(transpdLabel);
-
+       
         JLabel comidaLabel = new JLabel("Comida y supermercado  ");
         comidaLabel.setFont(new Font("Arial", Font.BOLD, 14));
         comidaLabel.setHorizontalAlignment(SwingConstants.LEFT);
         gastosListPanel.add(comidaLabel);
 
-        JLabel comidadLabel = new JLabel("0" + " €");
+        comidadLabel = new JLabel("0 €");
         comidadLabel.setFont(new Font("Arial", Font.BOLD, 14));
         comidadLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gastosListPanel.add(comidadLabel);
-
+       
         JLabel hogarLabel = new JLabel("Hogar y decoración  ");
         hogarLabel.setFont(new Font("Arial", Font.BOLD, 14));
         hogarLabel.setHorizontalAlignment(SwingConstants.LEFT);
         gastosListPanel.add(hogarLabel);
 
-        JLabel hogardLabel = new JLabel("0" + " €");
+        hogardLabel = new JLabel("0 €");
         hogardLabel.setFont(new Font("Arial", Font.BOLD, 14));
         hogardLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gastosListPanel.add(hogardLabel);
-
+       
         JLabel educLabel = new JLabel("Educación y formación  ");
         educLabel.setFont(new Font("Arial", Font.BOLD, 14));
         educLabel.setHorizontalAlignment(SwingConstants.LEFT);
         gastosListPanel.add(educLabel);
 
-        JLabel educdLabel = new JLabel("0" + " €");
+        educdLabel = new JLabel("0 €");
         educdLabel.setFont(new Font("Arial", Font.BOLD, 14));
         educdLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gastosListPanel.add(educdLabel);
-
+       
         rightPanel.add(gastosListPanel, BorderLayout.CENTER);
 
         // Organizar todo
@@ -425,6 +435,7 @@ public class MainView extends JFrame {
 
         TablaGastos tablaGastos = new TablaGastos();
         double totalGastos = tablaGastos.obtenerTotalGastos(idUsuarioActual);
+        Map<String, Double> totalPorCategoria = tablaGastos.obtenerTotalGastosPorCategoria(idUsuarioActual);
 
         // Calcular el beneficio neto
         double beneficioNeto = totalIngresos - totalGastos;
@@ -433,6 +444,22 @@ public class MainView extends JFrame {
         ingresosValueLabel.setText(String.format("%.2f €", totalIngresos));
         gastosValueLabel.setText(String.format("%.2f €", totalGastos));
         beneficioNetoValueLabel.setText(String.format("%.2f €", beneficioNeto));
+
+        // Actualizar los totales por categoría
+        actualizarTotalesPorCategoria(totalPorCategoria);
+    }
+
+    private void actualizarTotalesPorCategoria(Map<String, Double> totalPorCategoria) {
+        // Aquí debes actualizar las etiquetas correspondientes a cada categoría
+        // Por ejemplo:
+        ociodLabel.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Ocio y Entretenimiento", 0.0)));
+        ropadLabel.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Ropa y Accesorios", 0.0)));
+        tecnodLabel.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Tecnología y Gadgets", 0.0)));
+        saluddLabel.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Salud y Cuidado Personal", 0.0)));
+        transpdLabel.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Transporte y Movilidad", 0.0)));
+        comidadLabel.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Comida y Supermercado", 0.0)));
+        hogardLabel.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Hogar y Decoración", 0.0)));
+        educdLabel.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Educación y Formación", 0.0)));
     }
 
     public static void main(String[] args) {

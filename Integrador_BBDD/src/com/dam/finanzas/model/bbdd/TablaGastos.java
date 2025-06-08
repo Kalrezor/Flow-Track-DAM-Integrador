@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.dam.finanzas.model.Gasto;
 
@@ -99,4 +101,43 @@ public class TablaGastos {
         return total;
     }
 
-}
+    public Map<String, Double> obtenerTotalGastosPorCategoria(int idUsuario) {
+        Map<String, Double> totalPorCategoria = new HashMap<>();
+        String query = "SELECT categoria, SUM(monto) AS total FROM Gasto WHERE id_usuario = ? GROUP BY categoria";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = conBBDD.getConexion();
+            pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, idUsuario);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                String categoria = rs.getString("categoria");
+                double total = rs.getDouble("total");
+                totalPorCategoria.put(categoria, total);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return totalPorCategoria;
+    }
+} 

@@ -12,8 +12,8 @@ public class TablaTransferencia {
 
     static final String NOM_TABLA_TRAN = "Transferencia";
     static final String NOM_COL_ID_TRAN = "id_transferencia";
-    static final String NOM_COL_ID_ORI = "id_origen";
-    static final String NOM_COL_ID_DES = "id_destino";
+    static final String NOM_COL_REM = "remitente";
+    static final String NOM_COL_DES = "destinatario";
     static final String NOM_COL_MONTO_TRAN = "monto";
     static final String NOM_COL_DESC_TRAN = "descripcion";
 
@@ -25,8 +25,8 @@ public class TablaTransferencia {
 
     public int registrarTransferencia(Transferencia transferencia) {
         int res = 0;
-        String query = "INSERT INTO " + NOM_TABLA_TRAN + "(" + NOM_COL_ID_ORI
-                + ", " + NOM_COL_ID_DES + ", " + NOM_COL_MONTO_TRAN + ", " + NOM_COL_DESC_TRAN + ") VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO " + NOM_TABLA_TRAN + "(" + NOM_COL_REM
+                + ", " + NOM_COL_DES + ", " + NOM_COL_MONTO_TRAN + ", " + NOM_COL_DESC_TRAN + ") VALUES (?, ?, ?, ?)";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -34,8 +34,8 @@ public class TablaTransferencia {
         try {
             con = conBBDD.getConexion();
             pstmt = con.prepareStatement(query);
-            pstmt.setInt(1, transferencia.getIdOrigen());
-            pstmt.setInt(2, transferencia.getIdDestino());
+            pstmt.setString(1, transferencia.getRemitente());
+            pstmt.setString(2, transferencia.getDestinatario());
             pstmt.setDouble(3, transferencia.getMonto());
             pstmt.setString(4, transferencia.getDescripcion());
 
@@ -62,7 +62,7 @@ public class TablaTransferencia {
 
     public Object[][] obtenerTransferencias(int idUsuario) {
         List<Object[]> transferencias = new ArrayList<>();
-        String query = "SELECT id_origen, id_destino, monto, descripcion FROM Transferencia WHERE id_origen = ? OR id_destino = ?";
+        String query = "SELECT remitente, destinatario, monto, descripcion FROM Transferencia WHERE remitente = ? OR destinatario = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -71,24 +71,17 @@ public class TablaTransferencia {
         try {
             con = conBBDD.getConexion();
             pstmt = con.prepareStatement(query);
-            pstmt.setInt(1, idUsuario);
-            pstmt.setInt(2, idUsuario);
+            pstmt.setString(1, obtenerNombreUsuario(idUsuario, "Usuario Desconocido"));
+            pstmt.setString(2, obtenerNombreUsuario(idUsuario, "Usuario Desconocido"));
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                int idOrigen = rs.getInt("id_origen");
-                int idDestino = rs.getInt("id_destino");
+                String remitente = rs.getString("remitente");
+                String destinatario = rs.getString("destinatario");
                 double monto = rs.getDouble("monto");
                 String descripcion = rs.getString("descripcion");
 
-                String remitente = obtenerNombreUsuario(idOrigen, "Usuario Desconocido");
-                String destinatario = obtenerNombreUsuario(idDestino, "Usuario Desconocido");
-
-                // Determinar si el usuario es el remitente o el destinatario
-                String usuarioRemitente = (idOrigen == idUsuario) ? "Tú" : remitente;
-                String usuarioDestinatario = (idDestino == idUsuario) ? "Tú" : destinatario;
-
-                transferencias.add(new Object[]{usuarioRemitente, usuarioDestinatario, monto});
+                transferencias.add(new Object[]{remitente, destinatario, monto});
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -117,7 +110,7 @@ public class TablaTransferencia {
     }
 
     private String obtenerNombreUsuario(int idUsuario, String nombrePorDefecto) {
-        String nombreUsuario = nombrePorDefecto; // Usar el nombre proporcionado por defecto
+        String nombreUsuario = nombrePorDefecto;
         String query = "SELECT nombre FROM Usuario WHERE id_usuario = ?";
 
         Connection con = null;
@@ -153,5 +146,4 @@ public class TablaTransferencia {
 
         return nombreUsuario;
     }
-
 }

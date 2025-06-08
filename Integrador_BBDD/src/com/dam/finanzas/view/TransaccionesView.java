@@ -240,9 +240,11 @@ public class TransaccionesView {
         JTextField destinatarioField = new JTextField(10);
         destinatarioField.setBounds(6, 92, 433, 25);
         destinatarioField.setPreferredSize(new Dimension(150, 25));
+        
         JTextField asuntoField = new JTextField(10);
         asuntoField.setBounds(6, 142, 433, 25);
         asuntoField.setPreferredSize(new Dimension(150, 25));
+        
         JTextField cantidadField = new JTextField(10);
         cantidadField.setBounds(6, 192, 433, 25);
         cantidadField.setPreferredSize(new Dimension(150, 25));
@@ -288,7 +290,7 @@ public class TransaccionesView {
         asuntoField.setForeground(Color.GRAY);
         cantidadField.setForeground(Color.GRAY);
 
-        destinatarioField.addFocusListener(new PlaceholderFocusListener(destinatarioField, "Destinatario"));
+        destinatarioField.addFocusListener(new PlaceholderFocusListener(destinatarioField, "Destinatario/Remitente"));
         asuntoField.addFocusListener(new PlaceholderFocusListener(asuntoField, "Asunto"));
         cantidadField.addFocusListener(new PlaceholderFocusListener(cantidadField, "Cantidad"));
 
@@ -304,29 +306,38 @@ public class TransaccionesView {
                 double cantidad = Double.parseDouble(cantidadField.getText());
 
                 if (cantidad > 0) {
-                    int idDestino = 1; // Asumiendo que el ID de destino es 1
+                    String nombreUsuarioActual = obtenerNombreUsuario(idUsuarioActual); // Obtener el nombre del usuario actual
+
                     if ("Enviar Dinero".equals(opcion)) {
-                        // Si el usuario está enviando dinero, el destinatario es el ID de destino
-                        idDestino = obtenerIdUsuarioPorNombre(nombreDestinatarioRemitente);
+                        // Enviar dinero: el usuario actual es el remitente, el destinatario es el nombre ingresado
+                        Transferencia transferencia = new Transferencia(nombreUsuarioActual, nombreDestinatarioRemitente, cantidad, asunto);
+                        TablaTransferencia tablaTransferencia = new TablaTransferencia();
+                        int resultado = tablaTransferencia.registrarTransferencia(transferencia);
+
+                        if (resultado > 0) {
+                            String mensaje = "Dinero enviado: " + cantidad + "€ a " + nombreDestinatarioRemitente + " por " + asunto;
+                            JOptionPane.showMessageDialog(null, mensaje, "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                            destinatarioField.setText("");
+                            asuntoField.setText("");
+                            cantidadField.setText("");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Error al registrar la transferencia", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
                     } else if ("Recibir Dinero".equals(opcion)) {
-                        // Si el usuario está recibiendo dinero, el remitente es el ID de destino
-                        idDestino = obtenerIdUsuarioPorNombre(nombreDestinatarioRemitente);
-                    }
+                        // Recibir dinero: el usuario actual es el destinatario, el remitente es el nombre ingresado
+                        Transferencia transferencia = new Transferencia(nombreDestinatarioRemitente, nombreUsuarioActual, cantidad, asunto);
+                        TablaTransferencia tablaTransferencia = new TablaTransferencia();
+                        int resultado = tablaTransferencia.registrarTransferencia(transferencia);
 
-                    Transferencia transferencia = new Transferencia(idUsuarioActual, idDestino, cantidad, asunto);
-                    TablaTransferencia tablaTransferencia = new TablaTransferencia();
-                    int resultado = tablaTransferencia.registrarTransferencia(transferencia);
-
-                    if (resultado > 0) {
-                        String mensaje = opcion.equals("Enviar Dinero")
-                                ? "Dinero enviado: " + cantidad + "€ a " + nombreDestinatarioRemitente + " por " + asunto
-                                : "Dinero recibido: " + cantidad + "€ de " + nombreDestinatarioRemitente + " por " + asunto;
-                        JOptionPane.showMessageDialog(null, mensaje, "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                        destinatarioField.setText("");
-                        asuntoField.setText("");
-                        cantidadField.setText("");
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Error al registrar la transferencia", "Error", JOptionPane.ERROR_MESSAGE);
+                        if (resultado > 0) {
+                            String mensaje = "Dinero recibido: " + cantidad + "€ de " + nombreDestinatarioRemitente + " por " + asunto;
+                            JOptionPane.showMessageDialog(null, mensaje, "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                            destinatarioField.setText("");
+                            asuntoField.setText("");
+                            cantidadField.setText("");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Error al registrar la transferencia", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "La cantidad debe ser mayor que 0", "Error", JOptionPane.ERROR_MESSAGE);
@@ -358,10 +369,11 @@ public class TransaccionesView {
         return panel;
     }
 
-    private int obtenerIdUsuarioPorNombre(String nombre) {
-        // Implementa la lógica para obtener el ID de usuario por nombre
+    // Método para obtener el nombre del usuario a partir de su ID
+    private String obtenerNombreUsuario(int idUsuario) {
+        // Implementa la lógica para obtener el nombre del usuario a partir de su ID
         // Esto es solo un ejemplo, debes ajustarlo según tu base de datos
-        return 1; // Valor de ejemplo
+        return "Nombre del Usuario"; // Valor de ejemplo
     }
 
     private static class PlaceholderFocusListener implements FocusListener {
