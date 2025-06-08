@@ -10,6 +10,7 @@ import java.awt.event.FocusListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -55,7 +56,7 @@ public class DeudasView {
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(titleLabel, BorderLayout.NORTH);
 
-        JPanel inputPanel = new JPanel(new GridLayout(6, 2, 10, 10)); // Cambiado a 6 filas para acomodar el nuevo botón
+        JPanel inputPanel = new JPanel(new GridLayout(6, 2, 10, 10));
         inputPanel.setBackground(Color.LIGHT_GRAY);
         inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -170,8 +171,8 @@ public class DeudasView {
 
         JButton editButton = new JButton("Editar Deuda");
         editButton.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        editButton.setBackground(new Color(44, 62, 80)); // Mismo color de fondo que "Registrar Deuda"
-        editButton.setForeground(Color.WHITE); // Mismo color de texto que "Registrar Deuda"
+        editButton.setBackground(new Color(44, 62, 80));
+        editButton.setForeground(Color.WHITE);
         editButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -179,7 +180,7 @@ public class DeudasView {
             }
         });
 
-        inputPanel.add(editButton); // Añadir el botón "Editar Deuda" al panel de entrada
+        inputPanel.add(editButton);
 
         panel.add(inputPanel, BorderLayout.NORTH);
 
@@ -196,16 +197,41 @@ public class DeudasView {
         String montoPendienteStr = txtMontoPendiente.getText();
         String fechaVencimiento = txtFechaVencimiento.getText();
 
-        if (descripcion.isEmpty() || montoTotalStr.isEmpty() || montoPendienteStr.isEmpty() || fechaVencimiento.isEmpty()) {
+        // Validar que todos los campos estén completos
+        if (descripcion.isEmpty() || descripcion.equals("Descripción") ||
+            montoTotalStr.isEmpty() || montoTotalStr.equals("Monto Total") ||
+            montoPendienteStr.isEmpty() || montoPendienteStr.equals("Monto Pendiente") ||
+            fechaVencimiento.isEmpty() || fechaVencimiento.equals("Fecha Vencimiento (dd-MM-yyyy)")) {
+
             JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        if (!isValidDateFormat(fechaVencimiento)) {
-            JOptionPane.showMessageDialog(null, "La fecha de vencimiento debe estar en formato dd-MM-yyyy o dd/MM/yyyy.", "Error", JOptionPane.ERROR_MESSAGE);
+        // Validar que los campos de monto sean numéricos y no negativos
+        try {
+            double montoTotal = Double.parseDouble(montoTotalStr);
+            double montoPendiente = Double.parseDouble(montoPendienteStr);
+
+            if (montoTotal < 0 || montoPendiente < 0) {
+                JOptionPane.showMessageDialog(null, "Los montos no pueden ser negativos.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Por favor, ingrese valores numéricos válidos para los montos.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
+        // Validar el formato de la fecha
+        String[] dateValidation = isValidDateFormat(fechaVencimiento);
+        if (dateValidation[0].equals("0")) {
+            JOptionPane.showMessageDialog(null, "La fecha de vencimiento debe estar en formato dd-MM-yyyy o dd/MM/yyyy.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else if (dateValidation[0].equals("-1")) {
+            JOptionPane.showMessageDialog(null, "La fecha de vencimiento no puede ser anterior a la fecha actual (" + dateValidation[1] + ").", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Si todas las validaciones pasan, proceder con el registro de la deuda
         try {
             double montoTotal = Double.parseDouble(montoTotalStr);
             double montoPendiente = Double.parseDouble(montoPendienteStr);
@@ -222,30 +248,34 @@ public class DeudasView {
                 JOptionPane.showMessageDialog(null, "Error al registrar la deuda", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Por favor, ingresa valores válidos para los montos.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error inesperado al procesar los montos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private boolean isValidDateFormat(String dateStr) {
-        String[] formats = { "dd-MM-yyyy", "dd/MM/yyyy", "dd-MMM-yyyy", "dd/MMM/yyyy" };
+    private String[] isValidDateFormat(String dateStr) {
+        String[] formats = { "dd-MM-yyyy", "dd/MM/yyyy" };
+        SimpleDateFormat currentDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String currentDateStr = currentDateFormat.format(new Date());
 
         for (String format : formats) {
             SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.ENGLISH);
             sdf.setLenient(false);
 
             try {
-                if (format.contains("MMM")) {
-                    sdf.parse(dateStr.toUpperCase());
-                } else {
-                    sdf.parse(dateStr);
+                java.util.Date inputDate = sdf.parse(dateStr);
+                java.util.Date currentDate = new java.util.Date();
+
+                if (inputDate.before(currentDate)) {
+                    return new String[]{"-1", currentDateStr}; // La fecha es anterior a la actual
                 }
-                return true;
+
+                return new String[]{"1", currentDateStr}; // La fecha es válida y no ha pasado
             } catch (ParseException e) {
                 // Ignorar y probar con el siguiente formato
             }
         }
 
-        return false;
+        return new String[]{"0", currentDateStr}; // La fecha no es válida
     }
 
     private void limpiarCampos() {
