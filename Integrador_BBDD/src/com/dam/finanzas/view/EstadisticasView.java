@@ -9,16 +9,59 @@ import com.dam.finanzas.model.bbdd.TablaGastos;
 import com.dam.finanzas.model.bbdd.TablaIngresos;
 import com.dam.finanzas.model.bbdd.TablaObjetivoFinanciero;
 import com.dam.finanzas.model.bbdd.TablaTransferencia;
+
 import java.awt.*;
 import java.util.List;
 
-public class EstadisticasView {
-	private int idUsuarioActual;
+public class EstadisticasView extends JPanel {
+    private MainView mainView;
+    private int idUsuarioActual;
     private DefaultTableModel objetivosTableModel;
     private JTable objetivosTable;
+    private JLabel ingresosValueLabel;
+    private JLabel gastosValueLabel;
 
-    public EstadisticasView(int idUsuarioActual) {
+    public EstadisticasView(int idUsuarioActual, MainView mainView) {
         this.idUsuarioActual = idUsuarioActual;
+        this.mainView = mainView;
+        setLayout(new BorderLayout());
+        setBackground(Color.LIGHT_GRAY);
+        initialize();
+    }
+
+    private void initialize() {
+        JLabel titleLabel = new JLabel("Estadísticas Financieras");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        add(titleLabel, BorderLayout.NORTH);
+
+        JPanel estadisticasContainerPanel = new JPanel(new BorderLayout());
+        estadisticasContainerPanel.setBackground(Color.LIGHT_GRAY);
+
+        JLabel estadisticasLabel = new JLabel("Estadísticas");
+        estadisticasLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        estadisticasLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        estadisticasContainerPanel.add(estadisticasLabel, BorderLayout.NORTH);
+
+        JPanel finanzasPanel = createFinanzasPanel();
+        estadisticasContainerPanel.add(finanzasPanel, BorderLayout.CENTER);
+
+        add(estadisticasContainerPanel, BorderLayout.NORTH);
+
+        JPanel tablesPanel = new JPanel(new GridLayout(3, 1, 10, 10));
+        tablesPanel.setBackground(Color.LIGHT_GRAY);
+        tablesPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JPanel transferenciasPanel = createTransferenciasPanel();
+        tablesPanel.add(transferenciasPanel);
+
+        JPanel deudasPanel = createDeudasPanel();
+        tablesPanel.add(deudasPanel);
+
+        JPanel objetivosPanel = createObjetivosPanel();
+        tablesPanel.add(objetivosPanel);
+
+        add(tablesPanel, BorderLayout.CENTER);
     }
 
     public void actualizarTablaObjetivos() {
@@ -38,6 +81,17 @@ public class EstadisticasView {
         }
     }
 
+    public void actualizarTotales() {
+        TablaIngresos tablaIngresos = new TablaIngresos();
+        double totalIngresos = tablaIngresos.obtenerTotalIngresos(idUsuarioActual);
+
+        TablaGastos tablaGastos = new TablaGastos();
+        double totalGastos = tablaGastos.obtenerTotalGastos(idUsuarioActual);
+
+        ingresosValueLabel.setText(String.format("%.2f €", totalIngresos));
+        gastosValueLabel.setText(String.format("%.2f €", totalGastos));
+    }
+
     private JPanel createObjetivosPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createTitledBorder("Objetivos"));
@@ -49,48 +103,7 @@ public class EstadisticasView {
         JScrollPane objetivosScrollPane = new JScrollPane(objetivosTable);
         panel.add(objetivosScrollPane, BorderLayout.CENTER);
 
-        // Cargar datos inicialmente
         actualizarTablaObjetivos();
-
-        return panel;
-    }
-
-    public JPanel createEstadisticasPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(Color.LIGHT_GRAY);
-
-        JLabel titleLabel = new JLabel("Estadísticas Financieras");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        panel.add(titleLabel, BorderLayout.NORTH);
-
-        JPanel estadisticasContainerPanel = new JPanel(new BorderLayout());
-        estadisticasContainerPanel.setBackground(Color.LIGHT_GRAY);
-
-        JLabel estadisticasLabel = new JLabel("Estadísticas");
-        estadisticasLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        estadisticasLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        estadisticasContainerPanel.add(estadisticasLabel, BorderLayout.NORTH);
-
-        JPanel finanzasPanel = createFinanzasPanel();
-        estadisticasContainerPanel.add(finanzasPanel, BorderLayout.CENTER);
-
-        panel.add(estadisticasContainerPanel, BorderLayout.NORTH);
-
-        JPanel tablesPanel = new JPanel(new GridLayout(3, 1, 10, 10));
-        tablesPanel.setBackground(Color.LIGHT_GRAY);
-        tablesPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-        JPanel transferenciasPanel = createTransferenciasPanel();
-        tablesPanel.add(transferenciasPanel);
-
-        JPanel deudasPanel = createDeudasPanel();
-        tablesPanel.add(deudasPanel);
-
-        JPanel objetivosPanel = createObjetivosPanel();
-        tablesPanel.add(objetivosPanel);
-
-        panel.add(tablesPanel, BorderLayout.CENTER);
 
         return panel;
     }
@@ -104,7 +117,7 @@ public class EstadisticasView {
         JLabel ingresosLabel = new JLabel("Ingresos");
         ingresosLabel.setFont(new Font("Arial", Font.BOLD, 14));
         ingresosLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        JLabel ingresosValueLabel = new JLabel("0 €");
+        ingresosValueLabel = new JLabel("0 €");
         ingresosValueLabel.setFont(new Font("Arial", Font.BOLD, 14));
         ingresosValueLabel.setHorizontalAlignment(SwingConstants.CENTER);
         ingresosPanel.add(ingresosLabel, BorderLayout.NORTH);
@@ -115,7 +128,7 @@ public class EstadisticasView {
         JLabel gastosLabel = new JLabel("Gastos");
         gastosLabel.setFont(new Font("Arial", Font.BOLD, 14));
         gastosLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        JLabel gastosValueLabel = new JLabel("0 €");
+        gastosValueLabel = new JLabel("0 €");
         gastosValueLabel.setFont(new Font("Arial", Font.BOLD, 14));
         gastosValueLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gastosPanel.add(gastosLabel, BorderLayout.NORTH);
@@ -124,20 +137,7 @@ public class EstadisticasView {
         finanzasPanel.add(ingresosPanel);
         finanzasPanel.add(gastosPanel);
 
-        actualizarTotales(ingresosValueLabel, gastosValueLabel);
-
         return finanzasPanel;
-    }
-
-    private void actualizarTotales(JLabel ingresosValueLabel, JLabel gastosValueLabel) {
-        TablaIngresos tablaIngresos = new TablaIngresos();
-        double totalIngresos = tablaIngresos.obtenerTotalIngresos(idUsuarioActual);
-
-        TablaGastos tablaGastos = new TablaGastos();
-        double totalGastos = tablaGastos.obtenerTotalGastos(idUsuarioActual);
-
-        ingresosValueLabel.setText(String.format("%.2f €", totalIngresos));
-        gastosValueLabel.setText(String.format("%.2f €", totalGastos));
     }
 
     private JPanel createTransferenciasPanel() {
@@ -185,4 +185,7 @@ public class EstadisticasView {
         return panel;
     }
 
+    public JPanel createEstadisticasPanel() {
+        return this;
+    }
 }

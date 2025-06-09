@@ -24,14 +24,15 @@ public class MainView extends JFrame {
     private JLabel gastosValueLabel;
     private JLabel beneficioNetoValueLabel;
 
-    private JLabel lblOcio;
-    private JLabel lblRopa;
-    private JLabel lblTecno;
-    private JLabel lblSalud;
-    private JLabel lblTransporte;
-    private JLabel lblComida;
-    private JLabel lblHogar;
-    private JLabel lblEduca;
+    private EstadisticasView estadisticasView;
+	private JLabel lblOcio;
+	private JLabel lblRopa;
+	private JLabel lblTecno;
+	private JLabel lblSalud;
+	private JLabel lblTransporte;
+	private JLabel lblComida;
+	private JLabel lblHogar;
+	private JLabel lblEduca;
 
     public MainView(int idUsuarioActual) {
         this.idUsuarioActual = idUsuarioActual;
@@ -67,9 +68,8 @@ public class MainView extends JFrame {
         JPanel objetivosPanel = objetivosView.createObjetivosPanel();
         contentPanel.add(objetivosPanel, "OBJETIVOS");
 
-        EstadisticasView estadisticasView = new EstadisticasView(idUsuarioActual);
-        JPanel estadisticasPanel = estadisticasView.createEstadisticasPanel();
-        contentPanel.add(estadisticasPanel, "ESTADISTICAS");
+        estadisticasView = new EstadisticasView(idUsuarioActual, this);
+        contentPanel.add(estadisticasView.createEstadisticasPanel(), "ESTADISTICAS");
 
         getContentPane().add(contentPanel, BorderLayout.CENTER);
 
@@ -443,6 +443,9 @@ public class MainView extends JFrame {
         beneficioNetoValueLabel.setText(String.format("%.2f €", beneficioNeto));
 
         actualizarTotalesPorCategoria(totalPorCategoria);
+
+        estadisticasView.actualizarTotales();
+        estadisticasView.actualizarTablaObjetivos();
     }
 
     private void actualizarTotalesPorCategoria(Map<String, Double> totalPorCategoria) {
