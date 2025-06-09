@@ -1,6 +1,8 @@
 package com.dam.finanzas.control;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 import com.dam.finanzas.view.LoginView;
 import com.dam.finanzas.view.MainView;
@@ -10,10 +12,11 @@ import com.dam.finanzas.model.Usuario;
 import com.dam.finanzas.model.bbdd.TablaUsuario;
 import com.dam.finanzas.model.SesionUsuario;
 
-public class AppControlador implements java.awt.event.ActionListener {
+public class AppControlador implements ActionListener {
     private LoginView vlog;
     private RegisterView vreg;
     private TablaUsuario datos;
+    private int intentosFallidos = 0;
 
     public AppControlador(LoginView vlog, RegisterView vreg) {
         this.vlog = vlog;
@@ -29,9 +32,6 @@ public class AppControlador implements java.awt.event.ActionListener {
             String correo = vlog.getCorreo();
             String contrasena = vlog.getContrasena();
 
-            System.out.println("Correo: " + correo);
-            System.out.println("Contraseña: " + contrasena);
-
             if (datos.autenticarUsuario(correo, contrasena)) {
                 Usuario usuario = datos.obtenerUsuarioPorCorreo(correo);
                 if (usuario != null) {
@@ -45,7 +45,13 @@ public class AppControlador implements java.awt.event.ActionListener {
                     JOptionPane.showMessageDialog(vlog, "Usuario no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(vlog, "Credenciales incorrectas", "Error", JOptionPane.ERROR_MESSAGE);
+                intentosFallidos++;
+                if (intentosFallidos >= 3) {
+                    JOptionPane.showMessageDialog(vlog, "Ha fallado el inicio de sesión tres veces. La aplicación se cerrará.", "Error", JOptionPane.ERROR_MESSAGE);
+                    System.exit(0);
+                } else {
+                    JOptionPane.showMessageDialog(vlog, "Credenciales incorrectas. Intento " + intentosFallidos + " de 3.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         } else if ("Crear Cuenta".equals(actionCommand)) {
             vlog.dispose();
@@ -60,13 +66,13 @@ public class AppControlador implements java.awt.event.ActionListener {
             String contrasena = vreg.getContrasena();
             String repetirContrasena = vreg.getRepetirContrasena();
 
-            if (nombre.isEmpty() || correo.isEmpty() || contrasena.isEmpty() || repetirContrasena.isEmpty()) {
-                JOptionPane.showMessageDialog(vreg, "Todos los campos son obligatorios", "Error", JOptionPane.ERROR_MESSAGE);
+            if (!contrasena.equals(repetirContrasena)) {
+                JOptionPane.showMessageDialog(vreg, "Las contraseñas no coinciden", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            if (!contrasena.equals(repetirContrasena)) {
-                JOptionPane.showMessageDialog(vreg, "Las contraseñas no coinciden", "Error", JOptionPane.ERROR_MESSAGE);
+            if (nombre.isEmpty() || correo.isEmpty() || contrasena.isEmpty()) {
+                JOptionPane.showMessageDialog(vreg, "Todos los campos son obligatorios", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -92,6 +98,5 @@ public class AppControlador implements java.awt.event.ActionListener {
             }
         }
     }
-
-
 }
+
