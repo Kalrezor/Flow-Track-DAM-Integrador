@@ -6,19 +6,20 @@ public class ObjetivoFinanciero {
     private String descripcion;
     private double costo;
     private double ahorroMensualSugerido;
-    private String fechaMeta;
+    private String tiempoNecesario;
     private String estado;
 
-    public ObjetivoFinanciero(int idObjetivo, int idUsuario, String descripcion, double costo, double ahorroMensualSugerido, String fechaMeta, String estado) {
+    public ObjetivoFinanciero(int idObjetivo, int idUsuario, String descripcion, double costo, double ahorroMensualSugerido, String tiempoNecesario, String estado) {
         this.idObjetivo = idObjetivo;
         this.idUsuario = idUsuario;
         this.descripcion = descripcion;
         this.costo = costo;
         this.ahorroMensualSugerido = ahorroMensualSugerido;
-        this.fechaMeta = fechaMeta;
+        this.tiempoNecesario = tiempoNecesario;
         this.estado = estado;
     }
 
+    // Getters y Setters
     public int getIdObjetivo() {
         return idObjetivo;
     }
@@ -59,12 +60,12 @@ public class ObjetivoFinanciero {
         this.ahorroMensualSugerido = ahorroMensualSugerido;
     }
 
-    public String getFechaMeta() {
-        return fechaMeta;
+    public String getTiempoNecesario() {
+        return tiempoNecesario;
     }
 
-    public void setFechaMeta(String fechaMeta) {
-        this.fechaMeta = fechaMeta;
+    public void setTiempoNecesario(String tiempoNecesario) {
+        this.tiempoNecesario = tiempoNecesario;
     }
 
     public String getEstado() {

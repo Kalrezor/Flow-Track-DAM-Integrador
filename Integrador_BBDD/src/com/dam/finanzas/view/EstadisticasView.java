@@ -156,15 +156,17 @@ public class EstadisticasView {
         TablaObjetivoFinanciero tablaObjetivoFinanciero = new TablaObjetivoFinanciero();
         List<ObjetivoFinanciero> objetivosList = tablaObjetivoFinanciero.obtenerObjetivosPorUsuario(idUsuarioActual);
 
-        String[] objetivosColumnNames = {"Descripción", "Costo Total", "Ahorro Mensual Sugerido", "Fecha Meta", "Estado"};
+        // Actualiza los nombres de las columnas para incluir "Tiempo Necesario"
+        String[] objetivosColumnNames = {"Descripción", "Costo Total", "Ahorro Mensual Sugerido", "Tiempo Necesario", "Estado"};
         DefaultTableModel objetivosTableModel = new DefaultTableModel(objetivosColumnNames, 0);
 
         for (ObjetivoFinanciero objetivo : objetivosList) {
+            // Incluye el tiempo necesario en los datos de la fila
             Object[] rowData = {
                 objetivo.getDescripcion(),
                 String.format("%.2f €", objetivo.getCosto()),
                 String.format("%.2f €", objetivo.getAhorroMensualSugerido()),
-                objetivo.getFechaMeta(),
+                objetivo.getTiempoNecesario(),
                 objetivo.getEstado()
             };
             objetivosTableModel.addRow(rowData);
@@ -176,4 +178,5 @@ public class EstadisticasView {
 
         return panel;
     }
+
 }

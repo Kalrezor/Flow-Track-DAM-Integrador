@@ -28,7 +28,7 @@ public class ObjetivosView {
     }
 
     private void initializeTableModel() {
-        String[] columnNames = {"Descripción", "Costo Total", "Ahorro Mensual Sugerido", "Meses Necesarios", "Estado"};
+        String[] columnNames = {"Descripción", "Costo Total", "Ahorro Mensual Sugerido", "Tiempo Necesario", "Estado"};
         tableModel = new DefaultTableModel(columnNames, 0);
         table = new JTable(tableModel);
     }
@@ -182,13 +182,31 @@ public class ObjetivosView {
             public void actionPerformed(ActionEvent e) {
                 try {
                     String descripcion = descripcionField.getText();
-                    double costo = Double.parseDouble(costoField.getText());
-                    double ingresosMensuales = Double.parseDouble(ingresosMensualesField.getText());
-                    double gastosMensuales = Double.parseDouble(gastosMensualesField.getText());
-                    double ahorroMensualDeseado = Double.parseDouble(ahorroMensualDeseadoField.getText());
+                    String costoText = costoField.getText();
+                    String ingresosMensualesText = ingresosMensualesField.getText();
+                    String gastosMensualesText = gastosMensualesField.getText();
+                    String ahorroMensualDeseadoText = ahorroMensualDeseadoField.getText();
 
-                    if (ingresosMensuales <= 0 || gastosMensuales < 0) {
-                        JOptionPane.showMessageDialog(panel, "Los ingresos deben ser mayores que cero y los gastos no pueden ser negativos.", "Error", JOptionPane.ERROR_MESSAGE);
+                    // Verificar si algún campo está vacío
+                    if (descripcion.isEmpty() || descripcion.equals("Descripción") ||
+                        costoText.isEmpty() || costoText.equals("Costo Total (€)") ||
+                        ingresosMensualesText.isEmpty() || ingresosMensualesText.equals("Ingresos Mensuales (€)") ||
+                        gastosMensualesText.isEmpty() || gastosMensualesText.equals("Gastos Mensuales (€)") ||
+                        ahorroMensualDeseadoText.isEmpty() || ahorroMensualDeseadoText.equals("Ahorro Mensual Deseado (€)")) {
+
+                        JOptionPane.showMessageDialog(panel, "Por favor complete todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    // Convertir los campos numéricos
+                    double costo = Double.parseDouble(costoText);
+                    double ingresosMensuales = Double.parseDouble(ingresosMensualesText);
+                    double gastosMensuales = Double.parseDouble(gastosMensualesText);
+                    double ahorroMensualDeseado = Double.parseDouble(ahorroMensualDeseadoText);
+
+                    // Verificar si algún campo numérico es negativo
+                    if (ingresosMensuales < 0 || gastosMensuales < 0 || ahorroMensualDeseado < 0 || costo < 0) {
+                        JOptionPane.showMessageDialog(panel, "Los montos no pueden ser negativos.", "Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
 
@@ -200,6 +218,10 @@ public class ObjetivosView {
                     }
 
                     int mesesNecesarios = (int) Math.ceil(costo / ahorroMensualDeseado);
+                    int anos = mesesNecesarios / 12;
+                    int meses = mesesNecesarios % 12;
+
+                    String tiempoNecesario = anos > 0 ? String.format("%d años y %d meses", anos, meses) : String.format("%d meses", meses);
 
                     ObjetivoFinanciero nuevoObjetivo = new ObjetivoFinanciero(
                         0,
@@ -207,7 +229,7 @@ public class ObjetivosView {
                         descripcion,
                         costo,
                         ahorroMensualDeseado,
-                        "2023-12-31",
+                        tiempoNecesario,
                         "En progreso"
                     );
 
@@ -216,19 +238,24 @@ public class ObjetivosView {
 
                     JOptionPane.showMessageDialog(
                         panel,
-                        String.format("Con tus finanzas actuales, tardarás aproximadamente %d meses en cumplir este objetivo.", mesesNecesarios),
+                        String.format("Con tus finanzas actuales, tardarás aproximadamente %s en cumplir este objetivo.", tiempoNecesario),
                         "Tiempo Estimado",
                         JOptionPane.INFORMATION_MESSAGE
                     );
 
-                    descripcionField.setText("");
-                    costoField.setText("");
-                    ingresosMensualesField.setText("");
-                    gastosMensualesField.setText("");
-                    ahorroMensualDeseadoField.setText("");
+                    descripcionField.setText("Descripción");
+                    descripcionField.setForeground(Color.GRAY);
+                    costoField.setText("Costo Total (€)");
+                    costoField.setForeground(Color.GRAY);
+                    ingresosMensualesField.setText("Ingresos Mensuales (€)");
+                    ingresosMensualesField.setForeground(Color.GRAY);
+                    gastosMensualesField.setText("Gastos Mensuales (€)");
+                    gastosMensualesField.setForeground(Color.GRAY);
+                    ahorroMensualDeseadoField.setText("Ahorro Mensual Deseado (€)");
+                    ahorroMensualDeseadoField.setForeground(Color.GRAY);
 
                 } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(panel, "Por favor, ingresa valores válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(panel, "Por favor, introduzca valores numéricos válidos para los montos.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -272,7 +299,7 @@ public class ObjetivosView {
                 objetivo.getDescripcion(),
                 String.format("%.2f €", objetivo.getCosto()),
                 String.format("%.2f €", objetivo.getAhorroMensualSugerido()),
-                objetivo.getFechaMeta(),
+                objetivo.getTiempoNecesario(),
                 objetivo.getEstado()
             };
             tableModel.addRow(rowData);
