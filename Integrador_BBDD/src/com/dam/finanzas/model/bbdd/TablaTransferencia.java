@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.dam.finanzas.model.Transferencia;
 
 public class TablaTransferencia {
@@ -39,11 +40,18 @@ public class TablaTransferencia {
             pstmt.setDouble(3, transferencia.getMonto());
             pstmt.setString(4, transferencia.getDescripcion());
 
+            System.out.println("Ejecutando inserción: " + pstmt.toString()); // Depuración
+
             res = pstmt.executeUpdate();
+
+            if (res > 0) {
+                System.out.println("Transferencia registrada correctamente.");
+            } else {
+                System.out.println("No se pudo registrar la transferencia.");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
-
         } finally {
             try {
                 if (pstmt != null) {
@@ -62,7 +70,10 @@ public class TablaTransferencia {
 
     public Object[][] obtenerTransferencias(int idUsuario) {
         List<Object[]> transferencias = new ArrayList<>();
-        String query = "SELECT remitente, destinatario, monto, descripcion FROM Transferencia WHERE remitente = ? OR destinatario = ?";
+        String nombreUsuario = obtenerNombreUsuario(idUsuario);
+
+        String query = "SELECT remitente, destinatario, monto, descripcion FROM Transferencia " +
+                       "WHERE remitente = ? OR destinatario = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -70,9 +81,17 @@ public class TablaTransferencia {
 
         try {
             con = conBBDD.getConexion();
+            if (con == null) {
+                System.out.println("No se pudo establecer la conexión a la base de datos.");
+                return new Object[0][0];
+            }
+
             pstmt = con.prepareStatement(query);
-            pstmt.setString(1, obtenerNombreUsuario(idUsuario, "Usuario Desconocido"));
-            pstmt.setString(2, obtenerNombreUsuario(idUsuario, "Usuario Desconocido"));
+            pstmt.setString(1, nombreUsuario);
+            pstmt.setString(2, nombreUsuario);
+
+            System.out.println("Ejecutando consulta: " + pstmt.toString()); // Depuración
+
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -81,8 +100,15 @@ public class TablaTransferencia {
                 double monto = rs.getDouble("monto");
                 String descripcion = rs.getString("descripcion");
 
-                transferencias.add(new Object[]{remitente, destinatario, monto});
+                System.out.println("Transferencia encontrada: " + remitente + " -> " + destinatario + ": " + monto + " (" + descripcion + ")"); // Depuración
+
+                transferencias.add(new Object[]{remitente, destinatario, monto, descripcion});
             }
+
+            if (transferencias.isEmpty()) {
+                System.out.println("No se encontraron transferencias para el usuario con nombre: " + nombreUsuario);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -101,7 +127,7 @@ public class TablaTransferencia {
             }
         }
 
-        Object[][] data = new Object[transferencias.size()][3];
+        Object[][] data = new Object[transferencias.size()][4];
         for (int i = 0; i < transferencias.size(); i++) {
             data[i] = transferencias.get(i);
         }
@@ -109,8 +135,8 @@ public class TablaTransferencia {
         return data;
     }
 
-    private String obtenerNombreUsuario(int idUsuario, String nombrePorDefecto) {
-        String nombreUsuario = nombrePorDefecto;
+    public String obtenerNombreUsuario(int idUsuario) {
+        String nombreUsuario = "Usuario Desconocido"; // Valor por defecto en caso de no encontrar el usuario
         String query = "SELECT nombre FROM Usuario WHERE id_usuario = ?";
 
         Connection con = null;
@@ -125,6 +151,9 @@ public class TablaTransferencia {
 
             if (rs.next()) {
                 nombreUsuario = rs.getString("nombre");
+                System.out.println("Nombre de usuario encontrado: " + nombreUsuario); // Depuración
+            } else {
+                System.out.println("No se encontró un usuario con ID: " + idUsuario);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -146,4 +175,5 @@ public class TablaTransferencia {
 
         return nombreUsuario;
     }
+
 }

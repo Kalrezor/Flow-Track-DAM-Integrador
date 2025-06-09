@@ -285,19 +285,25 @@ public class MainView extends JFrame {
 
         datosFinancierosPanel.add(finanzasPanel, BorderLayout.CENTER);
 
-     // Tabla de Transferencias
-        JPanel transaccionesPanel = new JPanel(new BorderLayout());
+        
+        //##########################################################################################
+        
+        
+        // Tabla de Transferencias
+        JPanel transaccionesPanel = new JPanel();
         transaccionesPanel.setBackground(new Color(192, 192, 192));
         transaccionesPanel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(Color.GRAY),
             BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
+        transaccionesPanel.setLayout(null);
 
         // Título de Transferencias
         JLabel transferenciasLabel = new JLabel("Transferencias");
+        transferenciasLabel.setBounds(11, 11, 498, 17);
         transferenciasLabel.setFont(new Font("Arial", Font.BOLD, 14));
         transferenciasLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        transaccionesPanel.add(transferenciasLabel, BorderLayout.NORTH);
+        transaccionesPanel.add(transferenciasLabel);
 
         // Obtener datos de transferencias de la base de datos
         TablaTransferencia tablaTransferencia = new TablaTransferencia();
@@ -309,7 +315,10 @@ public class MainView extends JFrame {
         // Crear la tabla de transferencias
         JTable transferenciasTable = new JTable(dataTransferencias, columnNamesTransferencias);
         JScrollPane scrollPane = new JScrollPane(transferenciasTable);
-        transaccionesPanel.add(scrollPane, BorderLayout.CENTER);
+        scrollPane.setBounds(11, 28, 498, 187);
+        transaccionesPanel.add(scrollPane);
+        
+        //##########################################################################################
 
         JPanel rightPanel = new JPanel(new BorderLayout());
         rightPanel.setBackground(Color.LIGHT_GRAY);
@@ -414,13 +423,21 @@ public class MainView extends JFrame {
        
         rightPanel.add(gastosListPanel, BorderLayout.CENTER);
 
-        // Organizar todo
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setBackground(Color.LIGHT_GRAY);
 
-        // Agregar componentes al centro
         centerPanel.add(datosFinancierosPanel, BorderLayout.NORTH);
         centerPanel.add(transaccionesPanel, BorderLayout.CENTER);
+        
+        JLabel lblNewLabel = new JLabel("");
+        lblNewLabel.setIcon(new ImageIcon("C:\\Users\\aleja\\Downloads\\icons8-en-construcción-100.png"));
+        lblNewLabel.setBounds(184, 255, 105, 82);
+        transaccionesPanel.add(lblNewLabel);
+        
+        JLabel lblMensajeConstruc = new JLabel("En Contrucción");
+        lblMensajeConstruc.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblMensajeConstruc.setBounds(165, 347, 163, 22);
+        transaccionesPanel.add(lblMensajeConstruc);
 
         panel.add(centerPanel, BorderLayout.CENTER);
         panel.add(rightPanel, BorderLayout.EAST);
@@ -436,10 +453,8 @@ public class MainView extends JFrame {
         double totalGastos = tablaGastos.obtenerTotalGastos(idUsuarioActual);
         Map<String, Double> totalPorCategoria = tablaGastos.obtenerTotalGastosPorCategoria(idUsuarioActual);
 
-        // Calcular el beneficio neto
         double beneficioNeto = totalIngresos - totalGastos;
 
-        // Actualizar las etiquetas
         ingresosValueLabel.setText(String.format("%.2f €", totalIngresos));
         gastosValueLabel.setText(String.format("%.2f €", totalGastos));
         beneficioNetoValueLabel.setText(String.format("%.2f €", beneficioNeto));
