@@ -17,7 +17,7 @@ import java.util.Locale;
 import com.dam.finanzas.model.Deuda;
 import com.dam.finanzas.model.bbdd.TablaDeuda;
 
-public class DeudasView {
+public class DeudasView extends JPanel {
     private JTextField txtDescripcion;
     private JTextField txtMontoTotal;
     private JTextField txtMontoPendiente;

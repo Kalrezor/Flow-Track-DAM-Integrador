@@ -11,12 +11,12 @@ import com.dam.finanzas.model.Gasto;
 import com.dam.finanzas.model.Transferencia;
 
 public class TransaccionesView extends JPanel {
-    private Map<String, Double> gastosMap;
     private int idUsuarioActual;
+    private MainView mainView;
 
-    public TransaccionesView(Map<String, Double> gastosMap, int idUsuarioActual) {
-        this.gastosMap = gastosMap;
+    public TransaccionesView(int idUsuarioActual, MainView mainView) {
         this.idUsuarioActual = idUsuarioActual;
+        this.mainView = mainView;
         initialize();
     }
 
@@ -24,18 +24,15 @@ public class TransaccionesView extends JPanel {
         setLayout(new BorderLayout());
         setBackground(new Color(240, 240, 240));
 
-        // Panel para el título con un fondo más oscuro
         JPanel titlePanel = new JPanel(new BorderLayout());
         titlePanel.setBackground(new Color(200, 200, 200));
 
-        // Título
         JLabel titleLabel = new JLabel("GESTIÓN DE TRANSACCIONES", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
         titlePanel.add(titleLabel);
         add(titlePanel, BorderLayout.NORTH);
 
-        // Pestañas de transacciones
         JTabbedPane transaccionesTabs = new JTabbedPane();
         transaccionesTabs.addTab("Ingresos", createIngresosPanel());
         transaccionesTabs.addTab("Gastos", createGastosPanel());
@@ -48,34 +45,39 @@ public class TransaccionesView extends JPanel {
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         panel.setBackground(new Color(240, 240, 240));
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(15, 15, 15, 15);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        GridBagConstraints gbcLabel = new GridBagConstraints();
+        gbcLabel.insets = new Insets(15, 15, 15, 15);
+        gbcLabel.anchor = GridBagConstraints.WEST;
 
-        // Label and TextField for Cantidad
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        panel.add(new JLabel("Cantidad:"), gbc);
+        GridBagConstraints gbcField = new GridBagConstraints();
+        gbcField.insets = new Insets(15, 15, 15, 15);
+        gbcField.fill = GridBagConstraints.HORIZONTAL;
+        gbcField.weightx = 1.0;
 
-        gbc.gridx = 1;
+        gbcLabel.gridx = 0;
+        gbcLabel.gridy = 0;
+        panel.add(new JLabel("Cantidad:"), gbcLabel);
+
         JTextField cantidadField = new JTextField(20);
-        panel.add(cantidadField, gbc);
+        gbcField.gridx = 1;
+        gbcField.gridy = 0;
+        panel.add(cantidadField, gbcField);
 
-        // Label and TextField for Descripción
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        panel.add(new JLabel("Descripción:"), gbc);
+        gbcLabel.gridx = 0;
+        gbcLabel.gridy = 1;
+        panel.add(new JLabel("Descripción:"), gbcLabel);
 
-        gbc.gridx = 1;
         JTextField descripcionField = new JTextField(20);
-        panel.add(descripcionField, gbc);
+        gbcField.gridx = 1;
+        gbcField.gridy = 1;
+        panel.add(descripcionField, gbcField);
 
-        // Button for Registrar
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(25, 15, 15, 15);
+        GridBagConstraints gbcButton = new GridBagConstraints();
+        gbcButton.gridx = 0;
+        gbcButton.gridy = 2;
+        gbcButton.gridwidth = 2;
+        gbcButton.anchor = GridBagConstraints.CENTER;
+        gbcButton.insets = new Insets(25, 15, 15, 15);
         JButton registrarButton = new JButton("Registrar");
         registrarButton.addActionListener(e -> {
             try {
@@ -91,6 +93,7 @@ public class TransaccionesView extends JPanel {
                         JOptionPane.showMessageDialog(null, "Ingreso registrado: " + cantidad + "€", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                         cantidadField.setText("");
                         descripcionField.setText("");
+                        mainView.actualizarTotales();
                     } else {
                         JOptionPane.showMessageDialog(null, "Error al registrar el ingreso", "Error", JOptionPane.ERROR_MESSAGE);
                     }
@@ -101,7 +104,7 @@ public class TransaccionesView extends JPanel {
                 JOptionPane.showMessageDialog(null, "Por favor, ingrese una cantidad válida", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-        panel.add(registrarButton, gbc);
+        panel.add(registrarButton, gbcButton);
 
         return panel;
     }
@@ -111,34 +114,37 @@ public class TransaccionesView extends JPanel {
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         panel.setBackground(new Color(240, 240, 240));
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(15, 15, 15, 15);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        GridBagConstraints gbcLabel = new GridBagConstraints();
+        gbcLabel.insets = new Insets(15, 15, 15, 15);
+        gbcLabel.anchor = GridBagConstraints.WEST;
 
-        // Label and TextField for Cantidad
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        panel.add(new JLabel("Cantidad:"), gbc);
+        GridBagConstraints gbcField = new GridBagConstraints();
+        gbcField.insets = new Insets(15, 15, 15, 15);
+        gbcField.fill = GridBagConstraints.HORIZONTAL;
+        gbcField.weightx = 1.0;
 
-        gbc.gridx = 1;
+        gbcLabel.gridx = 0;
+        gbcLabel.gridy = 0;
+        panel.add(new JLabel("Cantidad:"), gbcLabel);
+
         JTextField cantidadField = new JTextField(20);
-        panel.add(cantidadField, gbc);
+        gbcField.gridx = 1;
+        gbcField.gridy = 0;
+        panel.add(cantidadField, gbcField);
 
-        // Label and TextField for Descripción
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        panel.add(new JLabel("Descripción:"), gbc);
+        gbcLabel.gridx = 0;
+        gbcLabel.gridy = 1;
+        panel.add(new JLabel("Descripción:"), gbcLabel);
 
-        gbc.gridx = 1;
         JTextField descripcionField = new JTextField(20);
-        panel.add(descripcionField, gbc);
+        gbcField.gridx = 1;
+        gbcField.gridy = 1;
+        panel.add(descripcionField, gbcField);
 
-        // Label and ComboBox for Categoría
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        panel.add(new JLabel("Categoría:"), gbc);
+        gbcLabel.gridx = 0;
+        gbcLabel.gridy = 2;
+        panel.add(new JLabel("Categoría:"), gbcLabel);
 
-        gbc.gridx = 1;
         String[] categorias = {
             "Ocio y Entretenimiento",
             "Ropa y Accesorios",
@@ -150,14 +156,16 @@ public class TransaccionesView extends JPanel {
             "Educación y Formación"
         };
         JComboBox<String> categoriaComboBox = new JComboBox<>(categorias);
-        panel.add(categoriaComboBox, gbc);
+        gbcField.gridx = 1;
+        gbcField.gridy = 2;
+        panel.add(categoriaComboBox, gbcField);
 
-        // Button for Registrar
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(25, 15, 15, 15);
+        GridBagConstraints gbcButton = new GridBagConstraints();
+        gbcButton.gridx = 0;
+        gbcButton.gridy = 3;
+        gbcButton.gridwidth = 2;
+        gbcButton.anchor = GridBagConstraints.CENTER;
+        gbcButton.insets = new Insets(25, 15, 15, 15);
         JButton registrarButton = new JButton("Registrar");
         registrarButton.addActionListener(e -> {
             try {
@@ -179,6 +187,7 @@ public class TransaccionesView extends JPanel {
                         JOptionPane.showMessageDialog(null, "Gasto registrado: " + cantidad + "€ en " + categoria, "Éxito", JOptionPane.INFORMATION_MESSAGE);
                         cantidadField.setText("");
                         descripcionField.setText("");
+                        mainView.actualizarTotales();
                     } else {
                         JOptionPane.showMessageDialog(null, "Error al registrar el gasto", "Error", JOptionPane.ERROR_MESSAGE);
                     }
@@ -189,7 +198,7 @@ public class TransaccionesView extends JPanel {
                 JOptionPane.showMessageDialog(null, "Por favor, ingrese una cantidad válida", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-        panel.add(registrarButton, gbc);
+        panel.add(registrarButton, gbcButton);
 
         return panel;
     }
@@ -199,53 +208,58 @@ public class TransaccionesView extends JPanel {
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         panel.setBackground(new Color(240, 240, 240));
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(15, 15, 15, 15);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        GridBagConstraints gbcLabel = new GridBagConstraints();
+        gbcLabel.insets = new Insets(15, 15, 15, 15);
+        gbcLabel.anchor = GridBagConstraints.WEST;
 
-        // Label and ComboBox for Tipo de Transferencia
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        panel.add(new JLabel("Tipo de Transferencia:"), gbc);
+        GridBagConstraints gbcField = new GridBagConstraints();
+        gbcField.insets = new Insets(15, 15, 15, 15);
+        gbcField.fill = GridBagConstraints.HORIZONTAL;
+        gbcField.weightx = 1.0;
 
-        gbc.gridx = 1;
+        gbcLabel.gridx = 0;
+        gbcLabel.gridy = 0;
+        panel.add(new JLabel("Tipo de Transferencia:"), gbcLabel);
+
         String[] opciones = {"Enviar Dinero", "Recibir Dinero"};
         JComboBox<String> tipoTransferenciaComboBox = new JComboBox<>(opciones);
-        panel.add(tipoTransferenciaComboBox, gbc);
+        gbcField.gridx = 1;
+        gbcField.gridy = 0;
+        panel.add(tipoTransferenciaComboBox, gbcField);
 
-        // Label and TextField for Destinatario/Remitente
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        panel.add(new JLabel("Destinatario/Remitente:"), gbc);
+        gbcLabel.gridx = 0;
+        gbcLabel.gridy = 1;
+        panel.add(new JLabel("Destinatario/Remitente:"), gbcLabel);
 
-        gbc.gridx = 1;
         JTextField destinatarioField = new JTextField(20);
-        panel.add(destinatarioField, gbc);
+        gbcField.gridx = 1;
+        gbcField.gridy = 1;
+        panel.add(destinatarioField, gbcField);
 
-        // Label and TextField for Asunto
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        panel.add(new JLabel("Asunto:"), gbc);
+        gbcLabel.gridx = 0;
+        gbcLabel.gridy = 2;
+        panel.add(new JLabel("Asunto:"), gbcLabel);
 
-        gbc.gridx = 1;
         JTextField asuntoField = new JTextField(20);
-        panel.add(asuntoField, gbc);
+        gbcField.gridx = 1;
+        gbcField.gridy = 2;
+        panel.add(asuntoField, gbcField);
 
-        // Label and TextField for Cantidad
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        panel.add(new JLabel("Cantidad:"), gbc);
+        gbcLabel.gridx = 0;
+        gbcLabel.gridy = 3;
+        panel.add(new JLabel("Cantidad:"), gbcLabel);
 
-        gbc.gridx = 1;
         JTextField cantidadField = new JTextField(20);
-        panel.add(cantidadField, gbc);
+        gbcField.gridx = 1;
+        gbcField.gridy = 3;
+        panel.add(cantidadField, gbcField);
 
-        // Button for Registrar
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(25, 15, 15, 15);
+        GridBagConstraints gbcButton = new GridBagConstraints();
+        gbcButton.gridx = 0;
+        gbcButton.gridy = 4;
+        gbcButton.gridwidth = 2;
+        gbcButton.anchor = GridBagConstraints.CENTER;
+        gbcButton.insets = new Insets(25, 15, 15, 15);
         JButton registrarButton = new JButton("Registrar");
         registrarButton.addActionListener(e -> {
             String nombreDestinatarioRemitente = destinatarioField.getText();
@@ -268,6 +282,7 @@ public class TransaccionesView extends JPanel {
                             destinatarioField.setText("");
                             asuntoField.setText("");
                             cantidadField.setText("");
+                            mainView.actualizarTotales();
                         } else {
                             JOptionPane.showMessageDialog(null, "Error al registrar la transferencia", "Error", JOptionPane.ERROR_MESSAGE);
                         }
@@ -282,6 +297,7 @@ public class TransaccionesView extends JPanel {
                             destinatarioField.setText("");
                             asuntoField.setText("");
                             cantidadField.setText("");
+                            mainView.actualizarTotales();
                         } else {
                             JOptionPane.showMessageDialog(null, "Error al registrar la transferencia", "Error", JOptionPane.ERROR_MESSAGE);
                         }
@@ -293,13 +309,12 @@ public class TransaccionesView extends JPanel {
                 JOptionPane.showMessageDialog(null, "Por favor, ingrese una cantidad válida", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-        panel.add(registrarButton, gbc);
+        panel.add(registrarButton, gbcButton);
 
         return panel;
     }
 
     private String obtenerNombreUsuario(int idUsuario) {
-        // Implementa la lógica para obtener el nombre del usuario a partir de su ID
         return "Nombre del Usuario";
     }
 }

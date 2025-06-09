@@ -19,19 +19,19 @@ public class MainView extends JFrame {
     private JPanel contentPanel;
     private Map<String, Double> gastosMap;
     private int idUsuarioActual;
-   
+
     private JLabel ingresosValueLabel;
     private JLabel gastosValueLabel;
     private JLabel beneficioNetoValueLabel;
-   
-    private JLabel ociodLabel;
-    private JLabel ropadLabel;
-    private JLabel tecnodLabel;
-    private JLabel saluddLabel;
-    private JLabel transpdLabel;
-    private JLabel comidadLabel;
-    private JLabel hogardLabel;
-    private JLabel educdLabel;
+
+    private JLabel lblOcio;
+    private JLabel lblRopa;
+    private JLabel lblTecno;
+    private JLabel lblSalud;
+    private JLabel lblTransporte;
+    private JLabel lblComida;
+    private JLabel lblHogar;
+    private JLabel lblEduca;
 
     public MainView(int idUsuarioActual) {
         this.idUsuarioActual = idUsuarioActual;
@@ -56,7 +56,7 @@ public class MainView extends JFrame {
         JPanel homePanel = createHomePanel();
         contentPanel.add(homePanel, "HOME");
 
-        TransaccionesView transaccionesView = new TransaccionesView(gastosMap, idUsuarioActual);
+        TransaccionesView transaccionesView = new TransaccionesView(idUsuarioActual, this);
         contentPanel.add(transaccionesView, "TRANSACCIONES");
 
         DeudasView deudasView = new DeudasView(idUsuarioActual);
@@ -70,12 +70,12 @@ public class MainView extends JFrame {
         EstadisticasView estadisticasView = new EstadisticasView(idUsuarioActual);
         JPanel estadisticasPanel = estadisticasView.createEstadisticasPanel();
         contentPanel.add(estadisticasPanel, "ESTADISTICAS");
-       
+
         getContentPane().add(contentPanel, BorderLayout.CENTER);
 
         actualizarTotales();
     }
-   
+
     private JPanel createSidebar() {
         JPanel sidebar = new JPanel(new GridBagLayout());
         sidebar.setOpaque(true);
@@ -86,7 +86,7 @@ public class MainView extends JFrame {
         paddingPanel.setOpaque(false);
         GridBagConstraints gbcPadding = new GridBagConstraints();
         gbcPadding.gridy = 0;
-        gbcPadding.weighty = 0.1; // Ajusta este valor para cambiar el margen superior
+        gbcPadding.weighty = 0.1;
         sidebar.add(paddingPanel, gbcPadding);
 
         JButton btnInicio = new JButton("Inicio");
@@ -103,12 +103,11 @@ public class MainView extends JFrame {
         btnInicio.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            cardLayout.show(contentPanel, "HOME");
+                cardLayout.show(contentPanel, "HOME");
                 System.out.println("Inicio");
             }
         });
 
-        // Botón Transacciones
         JButton btnTransacciones = new JButton("Transacciones");
         configureButton(btnTransacciones);
         GridBagConstraints gbcTransacciones = new GridBagConstraints();
@@ -123,104 +122,99 @@ public class MainView extends JFrame {
         btnTransacciones.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            cardLayout.show(contentPanel, "TRANSACCIONES");
+                cardLayout.show(contentPanel, "TRANSACCIONES");
                 System.out.println("Transacciones");
             }
         });
 
-    // Botón Deudas
-    JButton btnDeudas = new JButton("Deudas");
-    configureButton(btnDeudas);
-    GridBagConstraints gbcDeudas = new GridBagConstraints();
-    gbcDeudas.fill = GridBagConstraints.BOTH;
-    gbcDeudas.anchor = GridBagConstraints.NORTH;
-    gbcDeudas.weightx = 1.0;
-    gbcDeudas.weighty = 1.0;
-    gbcDeudas.gridy = 3;
-    gbcDeudas.insets = new Insets(5, 10, 5, 10);
-    sidebar.add(btnDeudas, gbcDeudas);
+        JButton btnDeudas = new JButton("Deudas");
+        configureButton(btnDeudas);
+        GridBagConstraints gbcDeudas = new GridBagConstraints();
+        gbcDeudas.fill = GridBagConstraints.BOTH;
+        gbcDeudas.anchor = GridBagConstraints.NORTH;
+        gbcDeudas.weightx = 1.0;
+        gbcDeudas.weighty = 1.0;
+        gbcDeudas.gridy = 3;
+        gbcDeudas.insets = new Insets(5, 10, 5, 10);
+        sidebar.add(btnDeudas, gbcDeudas);
 
-    btnDeudas.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            cardLayout.show(contentPanel, "DEUDAS");
-            System.out.println("Deudas");
-        }
-    });
-   
-    // Botón Objetivos
-    JButton btnObjetivos = new JButton("Objetivos");
-    configureButton(btnObjetivos);
-    GridBagConstraints gbcObjetivos = new GridBagConstraints();
-    gbcObjetivos.fill = GridBagConstraints.BOTH;
-    gbcObjetivos.anchor = GridBagConstraints.NORTH;
-    gbcObjetivos.weightx = 1.0;
-    gbcObjetivos.weighty = 1.0;
-    gbcObjetivos.gridy = 4;
-    gbcObjetivos.insets = new Insets(5, 10, 5, 10);
-    sidebar.add(btnObjetivos, gbcObjetivos);
+        btnDeudas.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(contentPanel, "DEUDAS");
+                System.out.println("Deudas");
+            }
+        });
 
-    btnObjetivos.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            cardLayout.show(contentPanel, "OBJETIVOS");
-            System.out.println("Objetivos");
-        }
-    });
+        JButton btnObjetivos = new JButton("Objetivos");
+        configureButton(btnObjetivos);
+        GridBagConstraints gbcObjetivos = new GridBagConstraints();
+        gbcObjetivos.fill = GridBagConstraints.BOTH;
+        gbcObjetivos.anchor = GridBagConstraints.NORTH;
+        gbcObjetivos.weightx = 1.0;
+        gbcObjetivos.weighty = 1.0;
+        gbcObjetivos.gridy = 4;
+        gbcObjetivos.insets = new Insets(5, 10, 5, 10);
+        sidebar.add(btnObjetivos, gbcObjetivos);
 
-   
-    // Botón Estadísticas
-    JButton btnEstadisticas = new JButton("Estadísticas");
-    configureButton(btnEstadisticas);
-    GridBagConstraints gbcEstadisticas = new GridBagConstraints();
-    gbcEstadisticas.fill = GridBagConstraints.BOTH;
-    gbcEstadisticas.anchor = GridBagConstraints.NORTH;
-    gbcEstadisticas.weightx = 1.0;
-    gbcEstadisticas.weighty = 1.0;
-    gbcEstadisticas.gridy = 5;
-    gbcEstadisticas.insets = new Insets(5, 10, 5, 10);
-    sidebar.add(btnEstadisticas, gbcEstadisticas);
+        btnObjetivos.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(contentPanel, "OBJETIVOS");
+                System.out.println("Objetivos");
+            }
+        });
 
-    btnEstadisticas.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            cardLayout.show(contentPanel, "ESTADISTICAS");
-            System.out.println("Estadísticas");
-        }
-    });
-   
-    // Botón Salir
-    JButton btnSalir = new JButton("Salir");
-    configureButton(btnSalir);
-    GridBagConstraints gbcSalir = new GridBagConstraints();
-    gbcSalir.fill = GridBagConstraints.BOTH;
-    gbcSalir.anchor = GridBagConstraints.NORTH;
-    gbcSalir.weightx = 1.0;
-    gbcSalir.weighty = 1.0;
-    gbcSalir.gridy = 6;
-    gbcSalir.insets = new Insets(5, 10, 5, 10);
-    sidebar.add(btnSalir, gbcSalir);
+        JButton btnEstadisticas = new JButton("Estadísticas");
+        configureButton(btnEstadisticas);
+        GridBagConstraints gbcEstadisticas = new GridBagConstraints();
+        gbcEstadisticas.fill = GridBagConstraints.BOTH;
+        gbcEstadisticas.anchor = GridBagConstraints.NORTH;
+        gbcEstadisticas.weightx = 1.0;
+        gbcEstadisticas.weighty = 1.0;
+        gbcEstadisticas.gridy = 5;
+        gbcEstadisticas.insets = new Insets(5, 10, 5, 10);
+        sidebar.add(btnEstadisticas, gbcEstadisticas);
 
-    btnSalir.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.exit(0);
-        }
-    });
+        btnEstadisticas.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(contentPanel, "ESTADISTICAS");
+                System.out.println("Estadísticas");
+            }
+        });
 
-    return sidebar;
-}
+        JButton btnSalir = new JButton("Salir");
+        configureButton(btnSalir);
+        GridBagConstraints gbcSalir = new GridBagConstraints();
+        gbcSalir.fill = GridBagConstraints.BOTH;
+        gbcSalir.anchor = GridBagConstraints.NORTH;
+        gbcSalir.weightx = 1.0;
+        gbcSalir.weighty = 1.0;
+        gbcSalir.gridy = 6;
+        gbcSalir.insets = new Insets(5, 10, 5, 10);
+        sidebar.add(btnSalir, gbcSalir);
+
+        btnSalir.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
+        return sidebar;
+    }
 
     private void configureButton(JButton button) {
         button.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        button.setBackground(new Color(44, 62, 80)); // Fondo opaco
-        button.setForeground(Color.WHITE); // Texto en blanco
+        button.setBackground(new Color(44, 62, 80));
+        button.setForeground(Color.WHITE);
         button.setOpaque(true);
         button.setBorderPainted(false);
         button.setFocusPainted(false);
-        button.setPreferredSize(new Dimension(130, 130)); // Tamaño cuadrado
+        button.setPreferredSize(new Dimension(130, 130));
     }
-   
+
     private JPanel createHomePanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.LIGHT_GRAY);
@@ -285,11 +279,6 @@ public class MainView extends JFrame {
 
         datosFinancierosPanel.add(finanzasPanel, BorderLayout.CENTER);
 
-        
-        //##########################################################################################
-        
-        
-        // Tabla de Transferencias
         JPanel transaccionesPanel = new JPanel();
         transaccionesPanel.setBackground(new Color(192, 192, 192));
         transaccionesPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -298,27 +287,21 @@ public class MainView extends JFrame {
         ));
         transaccionesPanel.setLayout(null);
 
-        // Título de Transferencias
         JLabel transferenciasLabel = new JLabel("Transferencias");
         transferenciasLabel.setBounds(11, 11, 498, 17);
         transferenciasLabel.setFont(new Font("Arial", Font.BOLD, 14));
         transferenciasLabel.setHorizontalAlignment(SwingConstants.CENTER);
         transaccionesPanel.add(transferenciasLabel);
 
-        // Obtener datos de transferencias de la base de datos
         TablaTransferencia tablaTransferencia = new TablaTransferencia();
         Object[][] dataTransferencias = tablaTransferencia.obtenerTransferencias(idUsuarioActual);
 
-        // Nombres de las columnas
         String[] columnNamesTransferencias = {"Remitente", "Destinatario", "Monto"};
 
-        // Crear la tabla de transferencias
         JTable transferenciasTable = new JTable(dataTransferencias, columnNamesTransferencias);
         JScrollPane scrollPane = new JScrollPane(transferenciasTable);
         scrollPane.setBounds(11, 28, 498, 187);
         transaccionesPanel.add(scrollPane);
-        
-        //##########################################################################################
 
         JPanel rightPanel = new JPanel(new BorderLayout());
         rightPanel.setBackground(Color.LIGHT_GRAY);
@@ -346,81 +329,81 @@ public class MainView extends JFrame {
         ocioLabel.setHorizontalAlignment(SwingConstants.LEFT);
         gastosListPanel.add(ocioLabel);
 
-        ociodLabel = new JLabel("0 €");
-        ociodLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        ociodLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gastosListPanel.add(ociodLabel);
+        lblOcio = new JLabel("0 €");
+        lblOcio.setFont(new Font("Arial", Font.BOLD, 14));
+        lblOcio.setHorizontalAlignment(SwingConstants.CENTER);
+        gastosListPanel.add(lblOcio);
 
         JLabel ropaLabel = new JLabel("Ropa y accesorios  ");
         ropaLabel.setFont(new Font("Arial", Font.BOLD, 14));
         ropaLabel.setHorizontalAlignment(SwingConstants.LEFT);
         gastosListPanel.add(ropaLabel);
-       
-        ropadLabel = new JLabel("0 €");
-        ropadLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        ropadLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gastosListPanel.add(ropadLabel);
-       
+
+        lblRopa = new JLabel("0 €");
+        lblRopa.setFont(new Font("Arial", Font.BOLD, 14));
+        lblRopa.setHorizontalAlignment(SwingConstants.CENTER);
+        gastosListPanel.add(lblRopa);
+
         JLabel tecnoLabel = new JLabel("Tecnología y gadgets  ");
         tecnoLabel.setFont(new Font("Arial", Font.BOLD, 14));
         tecnoLabel.setHorizontalAlignment(SwingConstants.LEFT);
         gastosListPanel.add(tecnoLabel);
 
-        tecnodLabel = new JLabel("0 €");
-        tecnodLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        tecnodLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gastosListPanel.add(tecnodLabel);
-       
+        lblTecno = new JLabel("0 €");
+        lblTecno.setFont(new Font("Arial", Font.BOLD, 14));
+        lblTecno.setHorizontalAlignment(SwingConstants.CENTER);
+        gastosListPanel.add(lblTecno);
+
         JLabel saludLabel = new JLabel("Salud y cuidado personal  ");
         saludLabel.setFont(new Font("Arial", Font.BOLD, 14));
         saludLabel.setHorizontalAlignment(SwingConstants.LEFT);
         gastosListPanel.add(saludLabel);
 
-        saluddLabel = new JLabel("0 €");
-        saluddLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        saluddLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gastosListPanel.add(saluddLabel);
-       
+        lblSalud = new JLabel("0 €");
+        lblSalud.setFont(new Font("Arial", Font.BOLD, 14));
+        lblSalud.setHorizontalAlignment(SwingConstants.CENTER);
+        gastosListPanel.add(lblSalud);
+
         JLabel transpLabel = new JLabel("Transporte y movilidad  ");
         transpLabel.setFont(new Font("Arial", Font.BOLD, 14));
         transpLabel.setHorizontalAlignment(SwingConstants.LEFT);
         gastosListPanel.add(transpLabel);
 
-        transpdLabel = new JLabel("0 €");
-        transpdLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        transpdLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gastosListPanel.add(transpdLabel);
-       
+        lblTransporte = new JLabel("0 €");
+        lblTransporte.setFont(new Font("Arial", Font.BOLD, 14));
+        lblTransporte.setHorizontalAlignment(SwingConstants.CENTER);
+        gastosListPanel.add(lblTransporte);
+
         JLabel comidaLabel = new JLabel("Comida y supermercado  ");
         comidaLabel.setFont(new Font("Arial", Font.BOLD, 14));
         comidaLabel.setHorizontalAlignment(SwingConstants.LEFT);
         gastosListPanel.add(comidaLabel);
 
-        comidadLabel = new JLabel("0 €");
-        comidadLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        comidadLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gastosListPanel.add(comidadLabel);
-       
+        lblComida = new JLabel("0 €");
+        lblComida.setFont(new Font("Arial", Font.BOLD, 14));
+        lblComida.setHorizontalAlignment(SwingConstants.CENTER);
+        gastosListPanel.add(lblComida);
+
         JLabel hogarLabel = new JLabel("Hogar y decoración  ");
         hogarLabel.setFont(new Font("Arial", Font.BOLD, 14));
         hogarLabel.setHorizontalAlignment(SwingConstants.LEFT);
         gastosListPanel.add(hogarLabel);
 
-        hogardLabel = new JLabel("0 €");
-        hogardLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        hogardLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gastosListPanel.add(hogardLabel);
-       
+        lblHogar = new JLabel("0 €");
+        lblHogar.setFont(new Font("Arial", Font.BOLD, 14));
+        lblHogar.setHorizontalAlignment(SwingConstants.CENTER);
+        gastosListPanel.add(lblHogar);
+
         JLabel educLabel = new JLabel("Educación y formación  ");
         educLabel.setFont(new Font("Arial", Font.BOLD, 14));
         educLabel.setHorizontalAlignment(SwingConstants.LEFT);
         gastosListPanel.add(educLabel);
 
-        educdLabel = new JLabel("0 €");
-        educdLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        educdLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gastosListPanel.add(educdLabel);
-       
+        lblEduca = new JLabel("0 €");
+        lblEduca.setFont(new Font("Arial", Font.BOLD, 14));
+        lblEduca.setHorizontalAlignment(SwingConstants.CENTER);
+        gastosListPanel.add(lblEduca);
+
         rightPanel.add(gastosListPanel, BorderLayout.CENTER);
 
         JPanel centerPanel = new JPanel(new BorderLayout());
@@ -428,13 +411,13 @@ public class MainView extends JFrame {
 
         centerPanel.add(datosFinancierosPanel, BorderLayout.NORTH);
         centerPanel.add(transaccionesPanel, BorderLayout.CENTER);
-        
-        JLabel lblNewLabel = new JLabel("");
-        lblNewLabel.setIcon(new ImageIcon("C:\\Users\\aleja\\Downloads\\icons8-en-construcción-100.png"));
-        lblNewLabel.setBounds(184, 255, 105, 82);
-        transaccionesPanel.add(lblNewLabel);
-        
-        JLabel lblMensajeConstruc = new JLabel("En Contrucción");
+
+        JLabel lblIcoConstruc = new JLabel("");
+        lblIcoConstruc.setIcon(new ImageIcon("C:\\Users\\aleja\\Downloads\\icons8-en-construcción-100.png"));
+        lblIcoConstruc.setBounds(184, 255, 105, 82);
+        transaccionesPanel.add(lblIcoConstruc);
+
+        JLabel lblMensajeConstruc = new JLabel("En Construcción");
         lblMensajeConstruc.setFont(new Font("Tahoma", Font.BOLD, 18));
         lblMensajeConstruc.setBounds(165, 347, 163, 22);
         transaccionesPanel.add(lblMensajeConstruc);
@@ -459,27 +442,23 @@ public class MainView extends JFrame {
         gastosValueLabel.setText(String.format("%.2f €", totalGastos));
         beneficioNetoValueLabel.setText(String.format("%.2f €", beneficioNeto));
 
-        // Actualizar los totales por categoría
         actualizarTotalesPorCategoria(totalPorCategoria);
     }
 
     private void actualizarTotalesPorCategoria(Map<String, Double> totalPorCategoria) {
-        // Aquí debes actualizar las etiquetas correspondientes a cada categoría
-        // Por ejemplo:
-        ociodLabel.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Ocio y Entretenimiento", 0.0)));
-        ropadLabel.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Ropa y Accesorios", 0.0)));
-        tecnodLabel.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Tecnología y Gadgets", 0.0)));
-        saluddLabel.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Salud y Cuidado Personal", 0.0)));
-        transpdLabel.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Transporte y Movilidad", 0.0)));
-        comidadLabel.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Comida y Supermercado", 0.0)));
-        hogardLabel.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Hogar y Decoración", 0.0)));
-        educdLabel.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Educación y Formación", 0.0)));
+        lblOcio.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Ocio y Entretenimiento", 0.0)));
+        lblRopa.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Ropa y Accesorios", 0.0)));
+        lblTecno.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Tecnología y Gadgets", 0.0)));
+        lblSalud.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Salud y Cuidado Personal", 0.0)));
+        lblTransporte.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Transporte y Movilidad", 0.0)));
+        lblComida.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Comida y Supermercado", 0.0)));
+        lblHogar.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Hogar y Decoración", 0.0)));
+        lblEduca.setText(String.format("%.2f €", totalPorCategoria.getOrDefault("Educación y Formación", 0.0)));
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-
-            int idUsuarioActual = 1; // Cambiar para que funcione con todos los Usuarios
+            int idUsuarioActual = 1;
             MainView frame = new MainView(idUsuarioActual);
             frame.setVisible(true);
         });

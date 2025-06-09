@@ -40,7 +40,7 @@ public class TablaTransferencia {
             pstmt.setDouble(3, transferencia.getMonto());
             pstmt.setString(4, transferencia.getDescripcion());
 
-            System.out.println("Ejecutando inserción: " + pstmt.toString()); // Depuración
+            // System.out.println("Ejecutando inserción: " + pstmt.toString());
 
             res = pstmt.executeUpdate();
 
@@ -90,7 +90,7 @@ public class TablaTransferencia {
             pstmt.setString(1, nombreUsuario);
             pstmt.setString(2, nombreUsuario);
 
-            System.out.println("Ejecutando consulta: " + pstmt.toString()); // Depuración
+            // System.out.println("Ejecutando consulta: " + pstmt.toString());
 
             rs = pstmt.executeQuery();
 
@@ -136,7 +136,7 @@ public class TablaTransferencia {
     }
 
     public String obtenerNombreUsuario(int idUsuario) {
-        String nombreUsuario = "Usuario Desconocido"; // Valor por defecto en caso de no encontrar el usuario
+        String nombreUsuario = "Usuario Desconocido";
         String query = "SELECT nombre FROM Usuario WHERE id_usuario = ?";
 
         Connection con = null;
@@ -151,7 +151,7 @@ public class TablaTransferencia {
 
             if (rs.next()) {
                 nombreUsuario = rs.getString("nombre");
-                System.out.println("Nombre de usuario encontrado: " + nombreUsuario); // Depuración
+                System.out.println("Nombre de usuario encontrado: " + nombreUsuario);
             } else {
                 System.out.println("No se encontró un usuario con ID: " + idUsuario);
             }

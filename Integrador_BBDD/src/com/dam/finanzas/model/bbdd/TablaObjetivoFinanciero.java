@@ -17,7 +17,7 @@ public class TablaObjetivoFinanciero {
     static final String NOM_COL_DESC_OBJ = "descripcion";
     static final String NOM_COL_COST_OBJ = "costo";
     static final String NOM_COL_AHORRO_MENSUAL_OBJ = "ahorro_mensual_sugerido";
-    static final String NOM_COL_TIEMPO_NECESARIO = "tiempo_necesario"; // Nuevo campo
+    static final String NOM_COL_TIEMPO_NECESARIO = "tiempo_necesario";
     static final String NOM_COL_ESTADO_OBJ = "estado";
 
     private ConexionBBDD conBBDD;

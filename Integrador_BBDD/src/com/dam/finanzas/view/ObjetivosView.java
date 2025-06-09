@@ -12,7 +12,7 @@ import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObjetivosView {
+public class ObjetivosView extends JPanel {
     private EstadisticasView estadisticasView;
     private List<ObjetivoFinanciero> objetivosList;
     private DefaultTableModel tableModel;

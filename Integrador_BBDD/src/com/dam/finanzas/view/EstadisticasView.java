@@ -22,7 +22,7 @@ public class EstadisticasView {
     }
 
     public void actualizarTablaObjetivos() {
-        objetivosTableModel.setRowCount(0); // Limpiar la tabla
+        objetivosTableModel.setRowCount(0);
         TablaObjetivoFinanciero tablaObjetivoFinanciero = new TablaObjetivoFinanciero();
         List<ObjetivoFinanciero> objetivosList = tablaObjetivoFinanciero.obtenerObjetivosPorUsuario(idUsuarioActual);
 
