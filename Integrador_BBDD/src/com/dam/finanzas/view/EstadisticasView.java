@@ -13,10 +13,46 @@ import java.awt.*;
 import java.util.List;
 
 public class EstadisticasView {
-    private int idUsuarioActual;
+	private int idUsuarioActual;
+    private DefaultTableModel objetivosTableModel;
+    private JTable objetivosTable;
 
     public EstadisticasView(int idUsuarioActual) {
         this.idUsuarioActual = idUsuarioActual;
+    }
+
+    public void actualizarTablaObjetivos() {
+        objetivosTableModel.setRowCount(0); // Limpiar la tabla
+        TablaObjetivoFinanciero tablaObjetivoFinanciero = new TablaObjetivoFinanciero();
+        List<ObjetivoFinanciero> objetivosList = tablaObjetivoFinanciero.obtenerObjetivosPorUsuario(idUsuarioActual);
+
+        for (ObjetivoFinanciero objetivo : objetivosList) {
+            Object[] rowData = {
+                objetivo.getDescripcion(),
+                String.format("%.2f €", objetivo.getCosto()),
+                String.format("%.2f €", objetivo.getAhorroMensualSugerido()),
+                objetivo.getTiempoNecesario(),
+                objetivo.getEstado()
+            };
+            objetivosTableModel.addRow(rowData);
+        }
+    }
+
+    private JPanel createObjetivosPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("Objetivos"));
+
+        String[] objetivosColumnNames = {"Descripción", "Costo Total", "Ahorro Mensual Sugerido", "Tiempo Necesario", "Estado"};
+        objetivosTableModel = new DefaultTableModel(objetivosColumnNames, 0);
+        objetivosTable = new JTable(objetivosTableModel);
+
+        JScrollPane objetivosScrollPane = new JScrollPane(objetivosTable);
+        panel.add(objetivosScrollPane, BorderLayout.CENTER);
+
+        // Cargar datos inicialmente
+        actualizarTablaObjetivos();
+
+        return panel;
     }
 
     public JPanel createEstadisticasPanel() {
@@ -145,36 +181,6 @@ public class EstadisticasView {
         JTable deudasTable = new JTable(deudasTableModel);
         JScrollPane deudasScrollPane = new JScrollPane(deudasTable);
         panel.add(deudasScrollPane, BorderLayout.CENTER);
-
-        return panel;
-    }
-
-    private JPanel createObjetivosPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Objetivos"));
-
-        TablaObjetivoFinanciero tablaObjetivoFinanciero = new TablaObjetivoFinanciero();
-        List<ObjetivoFinanciero> objetivosList = tablaObjetivoFinanciero.obtenerObjetivosPorUsuario(idUsuarioActual);
-
-        // Actualiza los nombres de las columnas para incluir "Tiempo Necesario"
-        String[] objetivosColumnNames = {"Descripción", "Costo Total", "Ahorro Mensual Sugerido", "Tiempo Necesario", "Estado"};
-        DefaultTableModel objetivosTableModel = new DefaultTableModel(objetivosColumnNames, 0);
-
-        for (ObjetivoFinanciero objetivo : objetivosList) {
-            // Incluye el tiempo necesario en los datos de la fila
-            Object[] rowData = {
-                objetivo.getDescripcion(),
-                String.format("%.2f €", objetivo.getCosto()),
-                String.format("%.2f €", objetivo.getAhorroMensualSugerido()),
-                objetivo.getTiempoNecesario(),
-                objetivo.getEstado()
-            };
-            objetivosTableModel.addRow(rowData);
-        }
-
-        JTable objetivosTable = new JTable(objetivosTableModel);
-        JScrollPane objetivosScrollPane = new JScrollPane(objetivosTable);
-        panel.add(objetivosScrollPane, BorderLayout.CENTER);
 
         return panel;
     }

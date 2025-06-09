@@ -4,7 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.dam.finanzas.model.Estadistica;
+import com.dam.finanzas.model.ObjetivoFinanciero;
 
 public class TablaEstadistica {
 
@@ -47,9 +51,8 @@ public class TablaEstadistica {
 
             res = pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
-
         } finally {
             try {
                 if (pstmt != null) {
@@ -58,7 +61,7 @@ public class TablaEstadistica {
                 if (con != null) {
                     con.close();
                 }
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
@@ -93,9 +96,8 @@ public class TablaEstadistica {
                 );
             }
 
-        } catch (Exception e) {
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
-
         } finally {
             try {
                 if (rs != null) {
@@ -107,7 +109,7 @@ public class TablaEstadistica {
                 if (con != null) {
                     con.close();
                 }
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
@@ -143,7 +145,7 @@ public class TablaEstadistica {
             if (rs.next()) {
                 count = rs.getInt("count");
             }
-        } catch (Exception e) {
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         } finally {
             try {
@@ -172,5 +174,53 @@ public class TablaEstadistica {
     public int obtenerNumeroObjetivos(int idUsuario) {
         TablaObjetivoFinanciero tablaObjetivoFinanciero = new TablaObjetivoFinanciero();
         return tablaObjetivoFinanciero.obtenerObjetivosPorUsuario(idUsuario).size();
+    }
+
+    public List<ObjetivoFinanciero> obtenerObjetivosPorUsuario(int idUsuario) {
+        List<ObjetivoFinanciero> objetivos = new ArrayList<>();
+        String query = "SELECT * FROM ObjetivoFinanciero WHERE id_usuario = ?";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = conBBDD.getConexion();
+            pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, idUsuario);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                ObjetivoFinanciero objetivo = new ObjetivoFinanciero(
+                    rs.getInt("id_objetivo"),
+                    rs.getInt("id_usuario"),
+                    rs.getString("descripcion"),
+                    rs.getDouble("costo"),
+                    rs.getDouble("ahorro_mensual_sugerido"),
+                    rs.getString("tiempo_estimado"),
+                    rs.getString("estado")
+                );
+                objetivos.add(objetivo);
+            }
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return objetivos;
     }
 }

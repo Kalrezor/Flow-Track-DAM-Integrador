@@ -72,7 +72,7 @@ public class TablaObjetivoFinanciero {
 
     public List<ObjetivoFinanciero> obtenerObjetivosPorUsuario(int idUsuario) {
         List<ObjetivoFinanciero> objetivos = new ArrayList<>();
-        String query = "SELECT * FROM " + NOM_TABLA_OBJ + " WHERE " + NOM_COL_ID_USER + " = ?";
+        String query = "SELECT * FROM ObjetivoFinanciero WHERE id_usuario = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -86,19 +86,18 @@ public class TablaObjetivoFinanciero {
 
             while (rs.next()) {
                 ObjetivoFinanciero objetivo = new ObjetivoFinanciero(
-                    rs.getInt(NOM_COL_ID_OBJ),
-                    rs.getInt(NOM_COL_ID_USER),
-                    rs.getString(NOM_COL_DESC_OBJ),
-                    rs.getDouble(NOM_COL_COST_OBJ),
-                    rs.getDouble(NOM_COL_AHORRO_MENSUAL_OBJ),
-                    rs.getString(NOM_COL_TIEMPO_NECESARIO),
-                    rs.getString(NOM_COL_ESTADO_OBJ)
+                    rs.getInt("id_objetivo"),
+                    rs.getInt("id_usuario"),
+                    rs.getString("descripcion"),
+                    rs.getDouble("costo"),
+                    rs.getDouble("ahorro_mensual_sugerido"),
+                    rs.getString("tiempo_necesario"),
+                    rs.getString("estado")
                 );
                 objetivos.add(objetivo);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         } finally {
             try {
@@ -118,4 +117,5 @@ public class TablaObjetivoFinanciero {
 
         return objetivos;
     }
+
 }

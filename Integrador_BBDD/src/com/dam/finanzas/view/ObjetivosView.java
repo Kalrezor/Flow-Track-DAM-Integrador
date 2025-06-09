@@ -13,11 +13,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ObjetivosView {
+    private EstadisticasView estadisticasView;
     private List<ObjetivoFinanciero> objetivosList;
     private DefaultTableModel tableModel;
     private JTable table;
     private int idUsuarioActual;
     private TablaObjetivoFinanciero tablaObjetivoFinanciero;
+
+    public void setEstadisticasView(EstadisticasView estadisticasView) {
+        this.estadisticasView = estadisticasView;
+    }
 
     public ObjetivosView(int idUsuarioActual) {
         this.idUsuarioActual = idUsuarioActual;
@@ -187,7 +192,6 @@ public class ObjetivosView {
                     String gastosMensualesText = gastosMensualesField.getText();
                     String ahorroMensualDeseadoText = ahorroMensualDeseadoField.getText();
 
-                    // Verificar si algún campo está vacío
                     if (descripcion.isEmpty() || descripcion.equals("Descripción") ||
                         costoText.isEmpty() || costoText.equals("Costo Total (€)") ||
                         ingresosMensualesText.isEmpty() || ingresosMensualesText.equals("Ingresos Mensuales (€)") ||
@@ -198,13 +202,11 @@ public class ObjetivosView {
                         return;
                     }
 
-                    // Convertir los campos numéricos
                     double costo = Double.parseDouble(costoText);
                     double ingresosMensuales = Double.parseDouble(ingresosMensualesText);
                     double gastosMensuales = Double.parseDouble(gastosMensualesText);
                     double ahorroMensualDeseado = Double.parseDouble(ahorroMensualDeseadoText);
 
-                    // Verificar si algún campo numérico es negativo
                     if (ingresosMensuales < 0 || gastosMensuales < 0 || ahorroMensualDeseado < 0 || costo < 0) {
                         JOptionPane.showMessageDialog(panel, "Los montos no pueden ser negativos.", "Error", JOptionPane.ERROR_MESSAGE);
                         return;
@@ -235,6 +237,10 @@ public class ObjetivosView {
 
                     tablaObjetivoFinanciero.registrarObjetivoFinanciero(nuevoObjetivo);
                     cargarObjetivos();
+
+                    if (estadisticasView != null) {
+                        estadisticasView.actualizarTablaObjetivos();
+                    }
 
                     JOptionPane.showMessageDialog(
                         panel,
@@ -279,6 +285,10 @@ public class ObjetivosView {
                 objetivo.setEstado("Cumplido");
                 tablaObjetivoFinanciero.actualizarObjetivoFinanciero(objetivo);
                 cargarObjetivos();
+
+                if (estadisticasView != null) {
+                    estadisticasView.actualizarTablaObjetivos();
+                }
             }
         });
 

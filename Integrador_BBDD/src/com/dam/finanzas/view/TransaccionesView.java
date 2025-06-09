@@ -2,8 +2,6 @@ package com.dam.finanzas.view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.util.Map;
 import com.dam.finanzas.model.bbdd.TablaIngresos;
 import com.dam.finanzas.model.bbdd.TablaGastos;
@@ -12,61 +10,73 @@ import com.dam.finanzas.model.Ingreso;
 import com.dam.finanzas.model.Gasto;
 import com.dam.finanzas.model.Transferencia;
 
-public class TransaccionesView {
+public class TransaccionesView extends JPanel {
     private Map<String, Double> gastosMap;
     private int idUsuarioActual;
 
     public TransaccionesView(Map<String, Double> gastosMap, int idUsuarioActual) {
         this.gastosMap = gastosMap;
         this.idUsuarioActual = idUsuarioActual;
+        initialize();
     }
 
-    public JPanel createTransaccionesPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(Color.LIGHT_GRAY);
+    private void initialize() {
+        setLayout(new BorderLayout());
+        setBackground(new Color(240, 240, 240));
+
+        // Panel para el título con un fondo más oscuro
+        JPanel titlePanel = new JPanel(new BorderLayout());
+        titlePanel.setBackground(new Color(200, 200, 200));
 
         // Título
-        JLabel titleLabel = new JLabel("GESTIÓN DE TRANSACCIONES");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        panel.add(titleLabel, BorderLayout.NORTH);
+        JLabel titleLabel = new JLabel("GESTIÓN DE TRANSACCIONES", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        titlePanel.add(titleLabel);
+        add(titlePanel, BorderLayout.NORTH);
 
         // Pestañas de transacciones
         JTabbedPane transaccionesTabs = new JTabbedPane();
-        transaccionesTabs.addTab("INGRESOS", createIngresosPanel());
-        transaccionesTabs.addTab("GASTOS", createGastosPanel());
-        transaccionesTabs.addTab("TRANSFERENCIAS", createTransferenciasPanel());
-        panel.add(transaccionesTabs, BorderLayout.CENTER);
-
-        return panel;
+        transaccionesTabs.addTab("Ingresos", createIngresosPanel());
+        transaccionesTabs.addTab("Gastos", createGastosPanel());
+        transaccionesTabs.addTab("Transferencias", createTransferenciasPanel());
+        add(transaccionesTabs, BorderLayout.CENTER);
     }
 
     private JPanel createIngresosPanel() {
-        JPanel panel = new JPanel();
-        panel.setBorder(BorderFactory.createTitledBorder("Registrar Ingreso"));
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panel.setBackground(new Color(240, 240, 240));
 
-        // Campo de cantidad
-        JTextField cantidadField = new JTextField(10);
-        cantidadField.setBounds(6, 49, 433, 43);
-        cantidadField.setText("Cantidad");
-        cantidadField.setForeground(Color.GRAY);
-        cantidadField.addFocusListener(new PlaceholderFocusListener(cantidadField, "Cantidad"));
-        cantidadField.setPreferredSize(new Dimension(150, 25));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(15, 15, 15, 15);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Campo de descripción
-        JTextField descripcionField = new JTextField(10);
-        descripcionField.setBounds(6, 99, 433, 43);
-        descripcionField.setText("Descripción");
-        descripcionField.setForeground(Color.GRAY);
-        descripcionField.addFocusListener(new PlaceholderFocusListener(descripcionField, "Descripción"));
-        descripcionField.setPreferredSize(new Dimension(150, 25));
+        // Label and TextField for Cantidad
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(new JLabel("Cantidad:"), gbc);
 
-        // Botón de registro
+        gbc.gridx = 1;
+        JTextField cantidadField = new JTextField(20);
+        panel.add(cantidadField, gbc);
+
+        // Label and TextField for Descripción
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(new JLabel("Descripción:"), gbc);
+
+        gbc.gridx = 1;
+        JTextField descripcionField = new JTextField(20);
+        panel.add(descripcionField, gbc);
+
+        // Button for Registrar
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(25, 15, 15, 15);
         JButton registrarButton = new JButton("Registrar");
-        registrarButton.setBounds(52, 145, 345, 56);
-        registrarButton.setPreferredSize(new Dimension(100, 30));
-
-        // Acción del botón
         registrarButton.addActionListener(e -> {
             try {
                 double cantidad = Double.parseDouble(cantidadField.getText());
@@ -81,11 +91,6 @@ public class TransaccionesView {
                         JOptionPane.showMessageDialog(null, "Ingreso registrado: " + cantidad + "€", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                         cantidadField.setText("");
                         descripcionField.setText("");
-
-                        MainView mainView = (MainView) SwingUtilities.getWindowAncestor(registrarButton);
-                        if (mainView != null) {
-                            mainView.actualizarTotales();
-                        }
                     } else {
                         JOptionPane.showMessageDialog(null, "Error al registrar el ingreso", "Error", JOptionPane.ERROR_MESSAGE);
                     }
@@ -96,44 +101,44 @@ public class TransaccionesView {
                 JOptionPane.showMessageDialog(null, "Por favor, ingrese una cantidad válida", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-
-        panel.setLayout(null);
-        JLabel label = new JLabel("Cantidad:");
-        label.setBounds(6, 16, 433, 36);
-        panel.add(label);
-        panel.add(cantidadField);
-
-        JLabel labelDescripcion = new JLabel("Descripción:");
-        labelDescripcion.setBounds(6, 66, 433, 36);
-        panel.add(labelDescripcion);
-        panel.add(descripcionField);
-
-        panel.add(registrarButton);
+        panel.add(registrarButton, gbc);
 
         return panel;
     }
 
     private JPanel createGastosPanel() {
-        JPanel panel = new JPanel();
-        panel.setBorder(BorderFactory.createTitledBorder("Registrar Gasto"));
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panel.setBackground(new Color(240, 240, 240));
 
-        // Campo de cantidad
-        JTextField cantidadField = new JTextField(10);
-        cantidadField.setBounds(6, 42, 433, 33);
-        cantidadField.setText("Cantidad");
-        cantidadField.setForeground(Color.GRAY);
-        cantidadField.addFocusListener(new PlaceholderFocusListener(cantidadField, "Cantidad"));
-        cantidadField.setPreferredSize(new Dimension(150, 25));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(15, 15, 15, 15);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Campo de descripción
-        JTextField descripcionField = new JTextField(10);
-        descripcionField.setBounds(6, 92, 433, 33);
-        descripcionField.setText("Descripción");
-        descripcionField.setForeground(Color.GRAY);
-        descripcionField.addFocusListener(new PlaceholderFocusListener(descripcionField, "Descripción"));
-        descripcionField.setPreferredSize(new Dimension(150, 25));
+        // Label and TextField for Cantidad
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(new JLabel("Cantidad:"), gbc);
 
-        // ComboBox para categorías
+        gbc.gridx = 1;
+        JTextField cantidadField = new JTextField(20);
+        panel.add(cantidadField, gbc);
+
+        // Label and TextField for Descripción
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(new JLabel("Descripción:"), gbc);
+
+        gbc.gridx = 1;
+        JTextField descripcionField = new JTextField(20);
+        panel.add(descripcionField, gbc);
+
+        // Label and ComboBox for Categoría
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panel.add(new JLabel("Categoría:"), gbc);
+
+        gbc.gridx = 1;
         String[] categorias = {
             "Ocio y Entretenimiento",
             "Ropa y Accesorios",
@@ -145,15 +150,15 @@ public class TransaccionesView {
             "Educación y Formación"
         };
         JComboBox<String> categoriaComboBox = new JComboBox<>(categorias);
-        categoriaComboBox.setBounds(6, 142, 433, 33);
-        categoriaComboBox.setPreferredSize(new Dimension(150, 25));
+        panel.add(categoriaComboBox, gbc);
 
-        // Botón de registro
+        // Button for Registrar
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(25, 15, 15, 15);
         JButton registrarButton = new JButton("Registrar");
-        registrarButton.setBounds(77, 195, 286, 42);
-        registrarButton.setPreferredSize(new Dimension(100, 30));
-
-        // Acción del botón
         registrarButton.addActionListener(e -> {
             try {
                 double cantidad = Double.parseDouble(cantidadField.getText());
@@ -161,22 +166,7 @@ public class TransaccionesView {
                 String categoria = (String) categoriaComboBox.getSelectedItem();
 
                 if (cantidad > 0) {
-                    // Verificar que la categoría no sea null o vacía
                     if (categoria == null || categoria.isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "Seleccione una categoría válida", "Error", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-
-                    // Verificar que la categoría sea una de las permitidas
-                    boolean categoriaValida = false;
-                    for (String cat : categorias) {
-                        if (cat.equals(categoria)) {
-                            categoriaValida = true;
-                            break;
-                        }
-                    }
-
-                    if (!categoriaValida) {
                         JOptionPane.showMessageDialog(null, "Seleccione una categoría válida", "Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
@@ -189,11 +179,6 @@ public class TransaccionesView {
                         JOptionPane.showMessageDialog(null, "Gasto registrado: " + cantidad + "€ en " + categoria, "Éxito", JOptionPane.INFORMATION_MESSAGE);
                         cantidadField.setText("");
                         descripcionField.setText("");
-
-                        MainView mainView = (MainView) SwingUtilities.getWindowAncestor(registrarButton);
-                        if (mainView != null) {
-                            mainView.actualizarTotales();
-                        }
                     } else {
                         JOptionPane.showMessageDialog(null, "Error al registrar el gasto", "Error", JOptionPane.ERROR_MESSAGE);
                     }
@@ -204,112 +189,75 @@ public class TransaccionesView {
                 JOptionPane.showMessageDialog(null, "Por favor, ingrese una cantidad válida", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-
-        panel.setLayout(null);
-        JLabel label = new JLabel("Cantidad:");
-        label.setBounds(6, 17, 433, 33);
-        panel.add(label);
-        panel.add(cantidadField);
-
-        JLabel labelDescripcion = new JLabel("Descripción:");
-        labelDescripcion.setBounds(6, 67, 433, 33);
-        panel.add(labelDescripcion);
-        panel.add(descripcionField);
-
-        JLabel labelCategoria = new JLabel("Categoría:");
-        labelCategoria.setBounds(6, 117, 433, 33);
-        panel.add(labelCategoria);
-        panel.add(categoriaComboBox);
-
-        panel.add(registrarButton);
+        panel.add(registrarButton, gbc);
 
         return panel;
     }
 
     private JPanel createTransferenciasPanel() {
-        JPanel panel = new JPanel();
-        panel.setBorder(BorderFactory.createTitledBorder("Registrar Transferencia"));
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panel.setBackground(new Color(240, 240, 240));
 
-        // Opción para enviar, recibir o dejar en blanco
-        String[] opciones = {"", "Enviar Dinero", "Recibir Dinero"};
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(15, 15, 15, 15);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Label and ComboBox for Tipo de Transferencia
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(new JLabel("Tipo de Transferencia:"), gbc);
+
+        gbc.gridx = 1;
+        String[] opciones = {"Enviar Dinero", "Recibir Dinero"};
         JComboBox<String> tipoTransferenciaComboBox = new JComboBox<>(opciones);
-        tipoTransferenciaComboBox.setBounds(6, 38, 433, 25);
-        tipoTransferenciaComboBox.setPreferredSize(new Dimension(150, 25));
+        panel.add(tipoTransferenciaComboBox, gbc);
 
-        // Campos dinámicos
-        JTextField destinatarioField = new JTextField(10);
-        destinatarioField.setBounds(6, 92, 433, 25);
-        destinatarioField.setPreferredSize(new Dimension(150, 25));
-        
-        JTextField asuntoField = new JTextField(10);
-        asuntoField.setBounds(6, 142, 433, 25);
-        asuntoField.setPreferredSize(new Dimension(150, 25));
-        
-        JTextField cantidadField = new JTextField(10);
-        cantidadField.setBounds(6, 192, 433, 25);
-        cantidadField.setPreferredSize(new Dimension(150, 25));
+        // Label and TextField for Destinatario/Remitente
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(new JLabel("Destinatario/Remitente:"), gbc);
 
-        // Botón de registro
+        gbc.gridx = 1;
+        JTextField destinatarioField = new JTextField(20);
+        panel.add(destinatarioField, gbc);
+
+        // Label and TextField for Asunto
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panel.add(new JLabel("Asunto:"), gbc);
+
+        gbc.gridx = 1;
+        JTextField asuntoField = new JTextField(20);
+        panel.add(asuntoField, gbc);
+
+        // Label and TextField for Cantidad
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panel.add(new JLabel("Cantidad:"), gbc);
+
+        gbc.gridx = 1;
+        JTextField cantidadField = new JTextField(20);
+        panel.add(cantidadField, gbc);
+
+        // Button for Registrar
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(25, 15, 15, 15);
         JButton registrarButton = new JButton("Registrar");
-        registrarButton.setBounds(6, 217, 433, 25);
-        registrarButton.setPreferredSize(new Dimension(100, 30));
-
-        // Configurar campos iniciales
-        destinatarioField.setEnabled(false);
-        asuntoField.setEnabled(false);
-        cantidadField.setEnabled(false);
-
-        // Cambiar campos según la opción seleccionada
-        tipoTransferenciaComboBox.addActionListener(e -> {
-            String opcion = (String) tipoTransferenciaComboBox.getSelectedItem();
-            if ("Enviar Dinero".equals(opcion)) {
-                destinatarioField.setText("Destinatario");
-                asuntoField.setText("Asunto");
-                cantidadField.setText("Cantidad");
-            } else if ("Recibir Dinero".equals(opcion)) {
-                destinatarioField.setText("Remitente");
-                asuntoField.setText("Asunto");
-                cantidadField.setText("Cantidad");
-            } else {
-                destinatarioField.setText("");
-                asuntoField.setText("");
-                cantidadField.setText("");
-                destinatarioField.setEnabled(false);
-                asuntoField.setEnabled(false);
-                cantidadField.setEnabled(false);
-            }
-            if (!"".equals(opcion)) {
-                destinatarioField.setEnabled(true);
-                asuntoField.setEnabled(true);
-                cantidadField.setEnabled(true);
-            }
-        });
-
-        // Agregar placeholders
-        destinatarioField.setForeground(Color.GRAY);
-        asuntoField.setForeground(Color.GRAY);
-        cantidadField.setForeground(Color.GRAY);
-
-        destinatarioField.addFocusListener(new PlaceholderFocusListener(destinatarioField, "Destinatario/Remitente"));
-        asuntoField.addFocusListener(new PlaceholderFocusListener(asuntoField, "Asunto"));
-        cantidadField.addFocusListener(new PlaceholderFocusListener(cantidadField, "Cantidad"));
-
         registrarButton.addActionListener(e -> {
-            String opcion = (String) tipoTransferenciaComboBox.getSelectedItem();
-            if (opcion == null || opcion.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Seleccione un tipo de transferencia", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
             String nombreDestinatarioRemitente = destinatarioField.getText();
             String asunto = asuntoField.getText();
             try {
                 double cantidad = Double.parseDouble(cantidadField.getText());
 
                 if (cantidad > 0) {
-                    String nombreUsuarioActual = obtenerNombreUsuario(idUsuarioActual); // Obtener el nombre del usuario actual
+                    String nombreUsuarioActual = obtenerNombreUsuario(idUsuarioActual);
+                    String opcion = (String) tipoTransferenciaComboBox.getSelectedItem();
 
                     if ("Enviar Dinero".equals(opcion)) {
-                        // Enviar dinero: el usuario actual es el remitente, el destinatario es el nombre ingresado
                         Transferencia transferencia = new Transferencia(nombreUsuarioActual, nombreDestinatarioRemitente, cantidad, asunto);
                         TablaTransferencia tablaTransferencia = new TablaTransferencia();
                         int resultado = tablaTransferencia.registrarTransferencia(transferencia);
@@ -324,7 +272,6 @@ public class TransaccionesView {
                             JOptionPane.showMessageDialog(null, "Error al registrar la transferencia", "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     } else if ("Recibir Dinero".equals(opcion)) {
-                        // Recibir dinero: el usuario actual es el destinatario, el remitente es el nombre ingresado
                         Transferencia transferencia = new Transferencia(nombreDestinatarioRemitente, nombreUsuarioActual, cantidad, asunto);
                         TablaTransferencia tablaTransferencia = new TablaTransferencia();
                         int resultado = tablaTransferencia.registrarTransferencia(transferencia);
@@ -346,59 +293,13 @@ public class TransaccionesView {
                 JOptionPane.showMessageDialog(null, "Por favor, ingrese una cantidad válida", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-
-        panel.setLayout(null);
-        JLabel label = new JLabel("Tipo de Transferencia:");
-        label.setBounds(6, 17, 433, 25);
-        panel.add(label);
-        panel.add(tipoTransferenciaComboBox);
-        JLabel label_1 = new JLabel("Destinatario/Remitente:");
-        label_1.setBounds(6, 67, 433, 25);
-        panel.add(label_1);
-        panel.add(destinatarioField);
-        JLabel label_2 = new JLabel("Asunto:");
-        label_2.setBounds(6, 117, 433, 25);
-        panel.add(label_2);
-        panel.add(asuntoField);
-        JLabel label_3 = new JLabel("Cantidad:");
-        label_3.setBounds(6, 167, 433, 25);
-        panel.add(label_3);
-        panel.add(cantidadField);
-        panel.add(registrarButton);
+        panel.add(registrarButton, gbc);
 
         return panel;
     }
 
-    // Método para obtener el nombre del usuario a partir de su ID
     private String obtenerNombreUsuario(int idUsuario) {
         // Implementa la lógica para obtener el nombre del usuario a partir de su ID
-        // Esto es solo un ejemplo, debes ajustarlo según tu base de datos
-        return "Nombre del Usuario"; // Valor de ejemplo
-    }
-
-    private static class PlaceholderFocusListener implements FocusListener {
-        private final JTextField textField;
-        private final String placeholder;
-
-        public PlaceholderFocusListener(JTextField textField, String placeholder) {
-            this.textField = textField;
-            this.placeholder = placeholder;
-        }
-
-        @Override
-        public void focusGained(FocusEvent e) {
-            if (textField.getText().equals(placeholder)) {
-                textField.setText("");
-                textField.setForeground(Color.BLACK);
-            }
-        }
-
-        @Override
-        public void focusLost(FocusEvent e) {
-            if (textField.getText().isEmpty()) {
-                textField.setText(placeholder);
-                textField.setForeground(Color.GRAY);
-            }
-        }
+        return "Nombre del Usuario";
     }
 }

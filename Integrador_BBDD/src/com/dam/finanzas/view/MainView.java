@@ -57,8 +57,7 @@ public class MainView extends JFrame {
         contentPanel.add(homePanel, "HOME");
 
         TransaccionesView transaccionesView = new TransaccionesView(gastosMap, idUsuarioActual);
-        JPanel transaccionesPanel = transaccionesView.createTransaccionesPanel();
-        contentPanel.add(transaccionesPanel, "TRANSACCIONES");
+        contentPanel.add(transaccionesView, "TRANSACCIONES");
 
         DeudasView deudasView = new DeudasView(idUsuarioActual);
         JPanel deudasPanel = deudasView.createDeudasPanel();
