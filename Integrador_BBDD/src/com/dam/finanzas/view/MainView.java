@@ -19,6 +19,7 @@ public class MainView extends JFrame {
     private JPanel contentPanel;
     private Map<String, Double> gastosMap;
     private int idUsuarioActual;
+    private EstadisticasView estadisticasView;
 
     private JLabel ingresosValueLabel;
     private JLabel gastosValueLabel;
@@ -67,9 +68,8 @@ public class MainView extends JFrame {
         JPanel objetivosPanel = objetivosView.createObjetivosPanel();
         contentPanel.add(objetivosPanel, "OBJETIVOS");
 
-        EstadisticasView estadisticasView = new EstadisticasView(idUsuarioActual);
-        JPanel estadisticasPanel = estadisticasView.createEstadisticasPanel();
-        contentPanel.add(estadisticasPanel, "ESTADISTICAS");
+        estadisticasView = new EstadisticasView(idUsuarioActual, this);
+        contentPanel.add(estadisticasView, "ESTADISTICAS");
 
         getContentPane().add(contentPanel, BorderLayout.CENTER);
 
@@ -443,6 +443,8 @@ public class MainView extends JFrame {
         beneficioNetoValueLabel.setText(String.format("%.2f €", beneficioNeto));
 
         actualizarTotalesPorCategoria(totalPorCategoria);
+
+        estadisticasView.actualizarTotales();
     }
 
     private void actualizarTotalesPorCategoria(Map<String, Double> totalPorCategoria) {
