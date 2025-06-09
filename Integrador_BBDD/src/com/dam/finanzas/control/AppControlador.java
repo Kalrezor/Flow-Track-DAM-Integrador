@@ -60,13 +60,23 @@ public class AppControlador implements java.awt.event.ActionListener {
             String contrasena = vreg.getContrasena();
             String repetirContrasena = vreg.getRepetirContrasena();
 
+            if (nombre.isEmpty() || correo.isEmpty() || contrasena.isEmpty() || repetirContrasena.isEmpty()) {
+                JOptionPane.showMessageDialog(vreg, "Todos los campos son obligatorios", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             if (!contrasena.equals(repetirContrasena)) {
                 JOptionPane.showMessageDialog(vreg, "Las contraseñas no coinciden", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            if (nombre.isEmpty() || correo.isEmpty() || contrasena.isEmpty()) {
-                JOptionPane.showMessageDialog(vreg, "Todos los campos son obligatorios", "Error", JOptionPane.ERROR_MESSAGE);
+            if (contrasena.length() < 8) {
+                JOptionPane.showMessageDialog(vreg, "La contraseña debe tener al menos 8 caracteres.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (!correo.matches("^[\\w.-]+@gmail\\.com$")) {
+                JOptionPane.showMessageDialog(vreg, "El correo electrónico debe tener el formato correo@gmail.com.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -82,5 +92,6 @@ public class AppControlador implements java.awt.event.ActionListener {
             }
         }
     }
+
 
 }
